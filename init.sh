@@ -7,4 +7,4 @@ sudo apt-get install php7.3 php7.3-cli php7.3-common php7.3-json php7.3-opcache 
 cd ~
 curl -sS https://getcomposer.org/installer -o composer-setup.php
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-composer
+composer create-project laravel/laravel src --prefer-dist "8.*"
