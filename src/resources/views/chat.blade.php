@@ -1,4 +1,4 @@
 @extends('layouts.app')
 @section('content')
-Halaman Depan
+<chat :current_user="{{Auth::user()}}"></chat>
 @endsection
