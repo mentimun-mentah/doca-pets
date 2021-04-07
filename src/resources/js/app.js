@@ -20,12 +20,25 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('chat', require('./components/Chat.vue').default);
+Vue.component('home', require('./components/Home.vue').default);
+Vue.component('account', require('./components/Account.vue').default);
+Vue.component('treat', require('./components/treat/Treat.vue').default);
+Vue.component('treat-detail', require('./components/treat/TreatDetail.vue').default);
+Vue.component('news', require('./components/news/News.vue').default);
+Vue.component('pet-show', require('./components/PetShow.vue').default);
+Vue.component('doctor', require('./components/doctor/Doctor.vue').default);
+Vue.component('doctor-detail', require('./components/doctor/DoctorDetail.vue').default);
+Vue.component('ask', require('./components/ask/Ask.vue').default);
+Vue.component('ask-detail', require('./components/ask/AskDetail.vue').default);
+Vue.component('admin', require('./components/admin/Admin.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import wysiwyg from "vue-wysiwyg";
+Vue.use(wysiwyg, {}); // config is optional. more below
 
 const app = new Vue({
     el: '.app',

@@ -1,4 +1,4 @@
 @extends('layouts.app')
 @section('content')
-Halaman Depan
+<home :home="{{json_encode(url('/'))}}"></home>
 @endsection
