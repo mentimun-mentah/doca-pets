@@ -206,7 +206,7 @@
                   v-pre
                 >
                   <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" 
+                    src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" 
                     class="rounded rounded-circle mr-1" 
                     alt="profile"
                     width="30"
@@ -304,6 +304,8 @@
       <!-- FOOTER -->
     </div>
     <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ mix('js/app.js') }}"></script>
+    @include('sweetalert::alert')
   </body>
 </html>

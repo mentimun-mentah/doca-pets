@@ -28,6 +28,7 @@
         "laravel-echo": "^1.10.0",
         "moment": "^2.29.1",
         "pusher-js": "^7.0.3",
+        "vue-bootstrap-toasts": "^1.0.7",
         "vue-wysiwyg": "^1.7.2",
         "vue2-smooth-scroll": "^1.5.0"
     }

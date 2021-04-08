@@ -1,5 +1,6 @@
 <template>
   <div class="container wrapper bg-white">
+    <Toasts></Toasts>
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a
@@ -35,17 +36,23 @@
         <h4 class="py-4 border-bottom">Account settings</h4>
         <div class="d-flex align-items-start py-3 border-bottom">
           <img
-            src="https://images.pexels.com/photos/1037995/pexels-photo-1037995.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+            :src="storage + '/' + user.avatar"
             class="img rounded-circle"
             alt="profile"
           />
           <div class="pl-sm-4 pl-2" id="img-section">
             <b>Profile Photo</b>
-            <p>Accepted file type .png. Less than 1MB</p>
+            <p>Accepted file type .jpg,.jpeg,.png. Less than 1MB</p>
             <div class="file-btn btn btn-sm button border">
-							Upload
-							<input type="file" class="fileupload" name="file" accept="image/*" />
-						</div>
+              Upload
+              <input
+                type="file"
+                class="fileupload"
+                name="file"
+                accept="image/*"
+                @change="updateAvatar"
+              />
+            </div>
           </div>
         </div>
         <div class="py-2">
@@ -55,16 +62,25 @@
               <input
                 type="text"
                 class="bg-light form-control rounded"
-                placeholder="Steve"
+                v-model="user.name"
+                :class="[errors.name ? 'is-invalid' : '']"
               />
+              <small class="text-danger" v-if="errors.name">
+                {{ errors.name[0] }}
+              </small>
             </div>
             <div class="col-md-6 pt-md-0 pt-3">
               <label for="fullname">Fullname</label>
               <input
                 type="text"
                 class="bg-light form-control rounded"
-                placeholder="Smith"
+                placeholder="Fullname"
+                v-model="user.fullname"
+                :class="[errors.fullname ? 'is-invalid' : '']"
               />
+              <small class="text-danger" v-if="errors.fullname">
+                {{ errors.fullname[0] }}
+              </small>
             </div>
           </div>
           <div class="row py-2">
@@ -73,7 +89,8 @@
               <input
                 type="text"
                 class="bg-light form-control rounded"
-                placeholder="steve_@email.com"
+                :value="user.email"
+                disabled
               />
             </div>
             <div class="col-md-6 pt-md-0 pt-3">
@@ -81,12 +98,19 @@
               <input
                 type="tel"
                 class="bg-light form-control rounded"
-                placeholder="+1 213-548-6015"
+                placeholder="08786226222"
+                v-model="user.phone"
+                :class="[errors.phone ? 'is-invalid' : '']"
               />
+              <small class="text-danger" v-if="errors.phone">
+                {{ errors.phone[0] }}
+              </small>
             </div>
           </div>
           <div class="pt-3">
-            <button class="btn btn-primary">Save Changes</button>
+            <button class="btn btn-primary" @click="updateProfile">
+              Save Changes
+            </button>
           </div>
         </div>
       </div>
@@ -105,8 +129,13 @@
               <input
                 type="password"
                 class="bg-light form-control"
-                placeholder="Steve"
+                placeholder="Old Password"
+                v-model="update_password.old_password"
+                :class="[errors.old_password ? 'is-invalid' : '']"
               />
+              <small class="text-danger" v-if="errors.old_password">
+                {{ errors.old_password[0] }}
+              </small>
             </div>
           </div>
 
@@ -114,10 +143,15 @@
             <div class="col-md-12 pt-md-0 pt-3">
               <label for="new_password">New Password</label>
               <input
-                type="text"
+                type="password"
                 class="bg-light form-control"
-                placeholder="Smith"
+                placeholder="New Password"
+                v-model="update_password.password"
+                :class="[errors.password ? 'is-invalid' : '']"
               />
+              <small class="text-danger" v-if="errors.password">
+                {{ errors.password[0] }}
+              </small>
             </div>
           </div>
 
@@ -125,25 +159,104 @@
             <div class="col-md-12 pt-md-0 pt-3">
               <label for="new_password">Confirmation Password</label>
               <input
-                type="text"
+                type="password"
                 class="bg-light form-control"
-                placeholder="Smith"
+                placeholder="Confirmation Password"
+                v-model="update_password.password_confirmation"
+                :class="[errors.password_confirmation ? 'is-invalid' : '']"
               />
+              <small class="text-danger" v-if="errors.password_confirmation">
+                {{ errors.password_confirmation[0] }}
+              </small>
             </div>
           </div>
-
           <div class="pt-3">
-            <button class="btn btn-primary">Save Changes</button>
+            <button class="btn btn-primary" @click="updatePassword">
+              Save Changes
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- /tab-content -->
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["storage"],
+  data() {
+    return {
+      user: null,
+      update_password: {
+        old_password: "",
+        password: "",
+        password_confirmation: ""
+      },
+      errors: []
+    };
+  },
+  methods: {
+    updateProfile() {
+      let user = {
+        name: this.user.name,
+        fullname: this.user.fullname,
+        phone: this.user.phone
+      };
+
+      axios
+        .put("/account", user)
+        .then(res => {
+          this.$toast.success(res.data.status);
+          this.errors = [];
+        })
+        .catch(err => {
+          this.errors = err.response.data.errors;
+        });
+    },
+    updateAvatar(e) {
+      let formData = new FormData();
+      formData.append("avatar", e.target.files[0]);
+
+      const config = {
+        headers: { "content-type": "multipart/form-data" }
+      };
+      axios
+        .post("/account/avatar", formData, config)
+        .then(res => {
+          this.getUser();
+          this.$toast.success(res.data.status);
+        })
+        .catch(err => {
+          this.$toast.error(err.response.data.errors.avatar[0]);
+        });
+    },
+    updatePassword() {
+      axios
+        .put("/account/password", this.update_password)
+        .then(res => {
+          console.log(res.data);
+
+          this.errors = [];
+          this.update_password.old_password = "";
+          this.update_password.password = "";
+          this.update_password.password_confirmation = "";
+          this.$toast.success(res.data.status);
+        })
+        .catch(err => {
+          console.log(err.response.data);
+          this.errors = err.response.data.errors;
+        });
+    },
+    getUser() {
+      axios.get("/user").then(res => {
+        this.user = res.data;
+      });
+    }
+  },
+  mounted() {
+    this.getUser();
+  }
+};
 </script>
 
 <style>
@@ -239,14 +352,19 @@ select:focus {
 .file-btn {
   position: relative;
   overflow: hidden;
-  cursor: pointer;;
+  cursor: pointer;
 }
 .fileupload {
-  cursor: pointer;;
+  cursor: pointer;
   position: absolute;
   font-size: 50px;
   opacity: 0;
   right: 0;
   top: 0;
+}
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: #e9ecef !important;
+  opacity: 1;
 }
 </style>

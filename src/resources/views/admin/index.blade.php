@@ -31,16 +31,23 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet" />
     <!-- Argon CSS -->
     <link rel="stylesheet" href="https://firebasestorage.googleapis.com/v0/b/admin-dashboard-pro.appspot.com/o/css%2Fstyle.min.css?alt=media&token=e9d9401b-2d1f-4961-a937-102102d1723a" type="text/css">
+
+    <style>
+      .navbar-vertical.navbar-expand-xs .navbar-nav>.nav-item>.nav-link.active {
+        background: #a5a5a533;
+      }
+    </style>
   </head>
 
 <body>
 <div class="app">
+
   <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
     <div class="scrollbar-inner">
       <!-- Brand -->
       <div class="sidenav-header d-flex align-items-center">
-        <a class="navbar-brand" href="../../pages/dashboard/dashboard.html">
-          <h3>Doca.pets</h3>
+        <a href="/" class="navbar-brand" style="font-family: 'Dela Gothic One', cursive; color:#172b4d;" >
+          <span class="va-sub ml-2">Doca.pets</span>
         </a>
 
         <div class="ml-auto">
@@ -63,60 +70,104 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-dashboards">
-                <i class="far fa-house-flood text-primary"></i>
-                <span class="nav-link-text">Dashboards</span>
+              <a class="nav-link" href="#">
+                <i class="far fa-house-flood"></i>
+                <span class="nav-link-text">Dashboard</span>
               </a>
-              <div class="collapse show" id="navbar-dashboards">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item active">
-                    <a href="../../pages/dashboard/dashboard.html" class="nav-link">Dashboard</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">Home</a>
-                  </li>
-                </ul>
-              </div>
             </li>
-
             <li class="nav-item">
-              <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples">
-                <i class="far fa-sack-dollar text-green"></i>
-                <span class="nav-link-text">Transactions</span>
+              <a class="nav-link" href="#">
+                <i class="far fa-door-open"></i>
+                <span class="nav-link-text">Home</span>
               </a>
-              <div class="collapse" id="navbar-examples">
-                <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="../../pages/transaction/on-day.html" class="nav-link">On Day</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../../pages/transaction/booked.html" class="nav-link">Booked</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../../pages/transaction/expired.html" class="nav-link">Expired</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../../pages/transaction/finished.html" class="nav-link">Finished</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../../pages/transaction/approve-item.html" class="nav-link">Approve Item</a>
-                  </li>
-                </ul>
-              </div>
             </li>
-
-
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="far fa-users"></i>
+                <span class="nav-link-text">Users</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="far fa-newspaper"></i>
+                <span class="nav-link-text">Tambah Berita</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#">
+                <i class="far fa-paw"></i>
+                <span class="nav-link-text">Tambah Hewan</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="far fa-heartbeat"></i>
+                <span class="nav-link-text">Tambah Cara Merawat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="far fa-clipboard-list-check"></i>
+                <span class="nav-link-text">Kelola Berita</span>
+              </a>
+            </li>
           </ul>
+          <!-- Nav items -->
         </div><!-- /collapese -->
       </div><!-- /navbar-inner -->
 
-
     </div>
-  </nav>
+  </nav><!-- /sidenav -->
 
-  <main class="py-4">
+  <!-- Main content -->
+  <div class="main-content" id="panel">
+    <!-- Topnav -->
+    <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <!-- Navbar links -->
+          <ul class="navbar-nav align-items-center ml-md-auto">
+            <li class="nav-item d-xl-none">
+              <!-- Sidenav toggler -->
+              <div class="pr-3 sidenav-toggler sidenav-toggler-dark" data-action="sidenav-pin" data-target="#sidenav-main">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item d-sm-none">
+              <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
+                <i class="far fa-search"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav align-items-center ml-auto ml-md-0">
+            <li class="nav-item">
+              <a class="nav-link pr-0" href="#" role="button">
+                <div class="media align-items-center">
+                  <span class="avatar avatar-sm rounded-circle">
+                    <img alt="Image placeholder" src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png">
+                  </span>
+                  <div class="media-body ml-2 d-none d-lg-block">
+                    <span class="mb-0 text-sm  font-weight-bold">John Snow</span>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Header -->
+
+    <main>
+      <admin></admin>
       @yield('content')
-  </main>
+    </main>
+
+  </div><!-- /main-content -->
 </div>
 
   <!-- Scripts -->

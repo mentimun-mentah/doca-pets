@@ -19,6 +19,7 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('register', require('./components/Register.vue').default);
 Vue.component('chat', require('./components/Chat.vue').default);
 Vue.component('home', require('./components/Home.vue').default);
 Vue.component('account', require('./components/Account.vue').default);
@@ -39,6 +40,9 @@ Vue.component('admin', require('./components/admin/Admin.vue').default);
  */
 import wysiwyg from "vue-wysiwyg";
 Vue.use(wysiwyg, {}); // config is optional. more below
+
+import VueBootstrapToasts from "vue-bootstrap-toasts";
+Vue.use(VueBootstrapToasts);
 
 const app = new Vue({
     el: '.app',

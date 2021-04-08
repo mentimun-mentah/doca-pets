@@ -26,7 +26,7 @@
               >
                 <div class="d-flex align-items-start">
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+                    :src="storage + '/' + item.avatar"
                     class="rounded-circle mr-1"
                     alt="William Harris"
                     width="40"
@@ -66,7 +66,7 @@
                     >
                       <div>
                         <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+                          :src="storage + '/' + message.user.avatar"
                           class="rounded-circle mr-1"
                           alt="Chris Wood"
                           width="40"
@@ -89,7 +89,7 @@
                     <div class="chat-message-left pb-4" v-else>
                       <div>
                         <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+                          :src="storage + '/' + message.user.avatar"
                           class="rounded-circle mr-1"
                           alt="Sharon Lessman"
                           width="40"
@@ -141,7 +141,7 @@
 import moment from "moment";
 
 export default {
-  props: ["current_user"],
+  props: ["current_user","storage"],
   data() {
     return {
       usersOnline: [],
