@@ -6,6 +6,7 @@ use Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -65,6 +66,7 @@ class LoginController extends Controller
         if ($this->attemptLogin($request)) {
           if(Auth::user()->status == 0){
             Auth::logout();
+            toast('Check your email to activated your account.','warning');
             return view('auth.login');
           }
 

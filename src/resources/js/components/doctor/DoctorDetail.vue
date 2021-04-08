@@ -16,7 +16,7 @@
                   <span class="float-right font-weight-normal h6"> <i class="fas fa-thumbs-up text-primary"></i> (120) </span>
                 </h5>
                 <h5 class="card-title font-weight-bold text-secondary mb-1">Spesialis kandungan</h5>
-                <h6 class="card-title font-weight-bold text-secondary mb-0">085413232237</h6>
+                <h6 class="card-title font-weight-bold text-secondary mb-0">3645413232237</h6>
                 
               </div>
             </div>

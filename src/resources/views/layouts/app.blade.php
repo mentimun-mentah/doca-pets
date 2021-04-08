@@ -232,6 +232,12 @@
                   </a>
                   <a
                     class="dropdown-item"
+                    href="{{url('/account')}}"
+                  >
+                    Data Dokter
+                  </a>
+                  <a
+                    class="dropdown-item"
                     href="{{ route('logout') }}"
                     onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();"
@@ -306,6 +312,7 @@
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ mix('js/app.js') }}"></script>
+
     @include('sweetalert::alert')
   </body>
 </html>

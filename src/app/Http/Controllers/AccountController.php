@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -50,7 +51,7 @@ class AccountController extends Controller
           unlink($imagePath); 
       }
       # save image to storage
-      $imageName = time().'.'.$request->avatar->getClientOriginalExtension();
+      $imageName = Str::random(20).'.'.$request->avatar->getClientOriginalExtension();
       $request->avatar->move(public_path('storage/avatar/'),$imageName);
       # save image to db
       $user->avatar = $imageName;

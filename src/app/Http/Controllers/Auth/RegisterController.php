@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
-Use Alert;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Jobs\SendEmailRegisterUser;
+use App\Jobs\SendEmailRegisterDoctor;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -99,14 +100,48 @@ class RegisterController extends Controller
         ]);
 
         SendEmailRegisterUser::dispatch($user);
+        toast('Email confirmation has send.','info');
+    }
+
+    public function registerDoctor(Request $request)
+    {
+      $request->validate([
+          'name' => 'required|string|max:255',
+          'email' => 'required|string|email|max:255|unique:users',
+          'password' => 'required|string|min:8|confirmed',
+          'no_str' => 'required|numeric|unique:doctors',
+          'sertif' => 'required|mimes:jpg,jpeg,png|max:4000',
+          'surat_izin' => 'required|mimes:jpg,jpeg,png|max:4000'
+      ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'token' => Str::random(30)
+        ]);
+
+      # save image to storage
+      $sertifName = Str::random(20).'.'.$request->sertif->getClientOriginalExtension();
+      $suratIzinName = Str::random(20).'.'.$request->surat_izin->getClientOriginalExtension();
+      $request->sertif->move(public_path('storage/doctor/'),$sertifName);
+      $request->surat_izin->move(public_path('storage/doctor/'),$suratIzinName);
+
+      $user->doctor()->create([
+        'no_str' => $request->no_str,
+        'sertif' => $sertifName,
+        'surat_izin' => $suratIzinName
+      ]);
+
+        SendEmailRegisterDoctor::dispatch($user);
+        toast('Email waiting confirmation has send.','info');
     }
 
     public function verify($token,$id)
     {
       $user = User::findOrFail($id);
       if($user->token !== $token) {
-toast('Success Toast','success');
-
+          toast('Token not match!','error');
           return redirect('/');
         }
        $user->status = 1;

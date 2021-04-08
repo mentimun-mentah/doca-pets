@@ -234,7 +234,6 @@ export default {
       axios
         .put("/account/password", this.update_password)
         .then(res => {
-          console.log(res.data);
 
           this.errors = [];
           this.update_password.old_password = "";
@@ -243,7 +242,6 @@ export default {
           this.$toast.success(res.data.status);
         })
         .catch(err => {
-          console.log(err.response.data);
           this.errors = err.response.data.errors;
         });
     },

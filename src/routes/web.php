@@ -20,6 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/verify/{token}/{id}', [App\Http\Controllers\Auth\RegisterController::class,'verify']);
+Route::post('/register/doctor', [App\Http\Controllers\Auth\RegisterController::class,'registerDoctor']);
 
 Route::get('/chat', [App\Http\Controllers\ChatsController::class, 'index']);
 Route::get('/messages', [App\Http\Controllers\ChatsController::class, 'fetchMessages']);

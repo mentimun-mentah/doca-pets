@@ -31,8 +31,8 @@
                             <td>Spesialis kandungan</td>
                           </tr>
                           <tr>
-                            <td><i class="far fa-phone-alt mr-2"></i></td>
-                            <td>085413232237</td>
+                            <td><i class="far fa-id-card mr-2"></i></td>
+                            <td>37645413232237</td>
                           </tr>
                         </tabel>
                       </div>
