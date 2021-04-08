@@ -114,12 +114,15 @@ class RegisterController extends Controller
           'surat_izin' => 'required|mimes:jpg,jpeg,png|max:4000'
       ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'token' => Str::random(30)
-        ]);
+      $user = User::create([
+          'name' => $request->name,
+          'email' => $request->email,
+          'password' => Hash::make($request->password),
+          'token' => Str::random(30)
+      ]);
+
+      $user->role = 'doctor';
+      $user->save();
 
       # save image to storage
       $sertifName = Str::random(20).'.'.$request->sertif->getClientOriginalExtension();
