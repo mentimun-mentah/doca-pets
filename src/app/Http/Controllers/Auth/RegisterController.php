@@ -133,7 +133,8 @@ class RegisterController extends Controller
       $user->doctor()->create([
         'no_str' => $request->no_str,
         'sertif' => $sertifName,
-        'surat_izin' => $suratIzinName
+        'surat_izin' => $suratIzinName,
+        'status' => 'waiting'
       ]);
 
         SendEmailRegisterDoctor::dispatch($user);

@@ -220,7 +220,7 @@
                 >
                   <a
                     class="dropdown-item"
-                    href="{{url('/admin')}}"
+                    href="{{url('/admin/list-doctor')}}"
                   >
                     Admin
                   </a>
@@ -232,9 +232,9 @@
                   </a>
                   <a
                     class="dropdown-item"
-                    href="{{url('/account')}}"
+                    href="{{url('/doctor/profile')}}"
                   >
-                    Data Dokter
+                    Profile Dokter
                   </a>
                   <a
                     class="dropdown-item"

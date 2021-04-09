@@ -58,7 +58,7 @@
         <div class="py-2">
           <div class="row py-2">
             <div class="col-md-6">
-              <label for="name">Name</label>
+              <label for="name">Username</label>
               <input
                 type="text"
                 class="bg-light form-control rounded"

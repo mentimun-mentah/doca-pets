@@ -14,8 +14,9 @@
               />
               <div class="card-body">
                 <h5 class="card-title">Ini Anjing hilang</h5>
-                <p class="card-text">
+                <p class="card-text truncate-3">
                   Anjing gua hilang di sekitaran jimbaran pada hari selasa lalu...
+                  Walaupun canine enteric coronavirus sangat menular ke anjing lain, ia tidak menular pada manusia. Human coronavirus (SARS-CoV-2 atau COVID-19 dan sebelumnya disebut 2019-nCoV) adalah virus berbeda yang menyebabkan gejala pernapasan pada manusia dan tidak ada bukti ilmiah bahwa virus menyebabkan masalah pada anjing atau anjing adalah pembawa dari Itu. Namun, Pusat Pengendalian dan Pencegahan Penyakit (CDC) merekomendasikan bahwa jika teman-teman terinfeksi COVID-19 untuk menghindari atau membatasi kontak dengan hewan peliharaan teman-teman sampai informasi lebih lanjut tentang virus ini diketahui.
                 </p>
                 <button
                   type="button"

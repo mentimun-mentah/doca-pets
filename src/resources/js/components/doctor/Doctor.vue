@@ -21,7 +21,7 @@
                         <h5 class="card-title font-weight-bold">
                           dr. Kathleen Juanita Gunawan Soenario, Sp.OG
                         </h5>
-                        <tabel>
+                        <table>
                           <tr>
                             <td><i class="far fa-hospital-alt mr-2"></i></td>
                             <td>Siloam Hospitals Kebon Jeruk</td>
@@ -31,15 +31,15 @@
                             <td>Spesialis kandungan</td>
                           </tr>
                           <tr>
-                            <td><i class="far fa-id-card mr-2"></i></td>
+                            <td><i class="far fa-address-card mr-2"></i></td>
                             <td>37645413232237</td>
                           </tr>
-                        </tabel>
+                        </table>
                       </div>
                       <!-- /col-9 -->
                       <div class="col-3 border-left text-center">
                         <h6 class="font-weight-bold">Ulasan Dokter</h6>
-                        <p>
+                        <p class="user-select-none">
                           <i class="fas fa-thumbs-up text-primary"></i> (120)
                         </p>
                         <a

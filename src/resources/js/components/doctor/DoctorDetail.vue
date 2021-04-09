@@ -13,7 +13,7 @@
               <div class="media-body">
                 <h5 class="card-title font-weight-bold mb-1">
                   dr. Kathleen Juanita Gunawan Soenario, Sp.OG
-                  <span class="float-right font-weight-normal h6"> <i class="fas fa-thumbs-up text-primary"></i> (120) </span>
+                  <span class="float-right font-weight-normal h6 user-select-none"> <i class="fas fa-thumbs-up text-primary"></i> (120) </span>
                 </h5>
                 <h5 class="card-title font-weight-bold text-secondary mb-1">Spesialis kandungan</h5>
                 <h6 class="card-title font-weight-bold text-secondary mb-0">3645413232237</h6>

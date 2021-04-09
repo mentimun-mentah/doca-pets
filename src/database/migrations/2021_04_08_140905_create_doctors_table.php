@@ -18,6 +18,7 @@ class CreateDoctorsTable extends Migration
             $table->string('no_str')->unique();
             $table->string('sertif');
             $table->string('surat_izin');
+            $table->string('status',20);
             $table->string('nama_klinik')->nullable();
             $table->string('spesialis')->nullable();
             $table->string('spesialis_singkatan',20)->nullable();

@@ -14,7 +14,7 @@ class Doctor extends Model
      *
      * @var array
      */
-    protected $fillable = ['no_str', 'sertif', 'surat_izin'];
+    protected $fillable = ['no_str', 'sertif', 'surat_izin', 'status'];
 
     public function user()
     {

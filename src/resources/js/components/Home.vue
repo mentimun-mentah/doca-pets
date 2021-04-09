@@ -7,7 +7,7 @@
         </h1>
 
         <form>
-          <div class="form-row">
+          <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-8">
               <div class="form-group has-search">
                 <span class="fa fa-search form-control-feedback"></span>
@@ -21,7 +21,8 @@
             <div class="col-sm-12 col-md-6 col-lg-4">
               <div class="form-group">
                 <select id="inputState" class="form-control">
-                  <option selected>Anjing</option>
+                  <option>All</option>
+                  <option>Anjing</option>
                   <option>Kucing</option>
                 </select>
               </div>
@@ -32,11 +33,13 @@
         <div class="row">
           <div class="col col-lg-4 col-md-6 col-sm-12" v-for="n in 6" :key="n">
             <div class="card card-shadow-hover mb-3">
-              <img
-                src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1"
-                class="card-img-top"
-                alt="animal"
-              />
+              <div class="embed-responsive embed-responsive-16by9">
+                <img
+                  src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1"
+                  class="card-img-top embed-responsive-item obj-fit-cover"
+                  alt="animal"
+                />
+              </div>
               <div class="card-body">
                 <h5 class="card-title">Ini Anjing</h5>
                 <p class="card-text">

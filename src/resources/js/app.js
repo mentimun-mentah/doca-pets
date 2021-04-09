@@ -29,9 +29,13 @@ Vue.component('news', require('./components/news/News.vue').default);
 Vue.component('pet-show', require('./components/PetShow.vue').default);
 Vue.component('doctor', require('./components/doctor/Doctor.vue').default);
 Vue.component('doctor-detail', require('./components/doctor/DoctorDetail.vue').default);
+Vue.component('doctor-profile', require('./components/doctor/DoctorProfile.vue').default);
 Vue.component('ask', require('./components/ask/Ask.vue').default);
 Vue.component('ask-detail', require('./components/ask/AskDetail.vue').default);
-Vue.component('admin', require('./components/admin/Admin.vue').default);
+Vue.component('list-doctor', require('./components/admin/ListDoctor.vue').default);
+Vue.component('add-pet', require('./components/admin/pet/AddPet.vue').default);
+Vue.component('all-pet', require('./components/admin/pet/AllPet.vue').default);
+Vue.component('change-pet', require('./components/admin/pet/ChangePet.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -43,6 +47,8 @@ Vue.use(wysiwyg, {}); // config is optional. more below
 
 import VueBootstrapToasts from "vue-bootstrap-toasts";
 Vue.use(VueBootstrapToasts);
+
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 const app = new Vue({
     el: '.app',
