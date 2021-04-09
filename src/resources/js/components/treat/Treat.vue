@@ -3,31 +3,30 @@
     <section class="mt-3">
       <h2 class="text-center h2 mb-4">Cara merawat hewan</h2>
 
-      <div v-for="n in 4" :key="n">
-        <div class="card border-0 shadow-sm mt-4" v-if="n % 2 == 0">
+      <div v-for="(item,index) in treatData.data" :key="item.id">
+
+        <div class="card border-0 shadow-sm mt-4" v-if="index % 2 == 0">
           <div class="row align-items-center">
             <div class="col-md-7 order-md-2">
               <div class="card-body">
-                <a :href="home + '/treat/' + n" class="text-decoration-none">
+                <a :href="home + '/treat/' + item.slug" class="text-decoration-none">
                   <h2 class="featurette-heading truncate-2">
-                    Oh yeah, it’s that good.
-                    <span class="text-muted">See for yourself.</span>
+                    {{item.judul}}
                   </h2>
                 </a>
                 <p class="lead truncate-3">
-                  Another featurette? Of course. More placeholder content here
-                  to give you an idea of how this layout would work with some
-                  actual real-world content in place.
+                {{item.deskripsi | strippedContent}}
                 </p>
               </div>
               <!-- /card-body -->
             </div>
             <div class="col-md-5 order-md-1">
               <img
-                src="https://image-cdn.medkomtek.com/iLuvjdBdG9YQAec8KoMHHokI4z0=/640x640/smart/klikdokter-media-buckets/medias/2309767/original/033781000_1575535270-Risiko-Makan-Daging-Anjing-bagi-Kesehatan-by-soloway-123rf-36321023_s.jpg"
+                :src="storage + '/' + item.photo"
                 class="img-fluid mx-auto"
                 width="500"
                 height="500"
+                style="width: 450px; height: 450px; object-fit: cover;"
               />
             </div>
           </div>
@@ -38,25 +37,25 @@
           <div class="row align-items-center">
             <div class="col-md-7">
               <div class="card-body">
-                <a :href="home + '/treat/' + n" class="text-decoration-none">
+                <a :href="home + '/treat/' + item.slug" class="text-decoration-none">
                   <h2 class="featurette-heading truncate-2">
-                    First featurette heading.
-                    <span class="text-muted">It’ll blow your mind.</span>
+                    {{item.judul}}
                   </h2>
                 </a>
                 <p class="lead truncate-3">
-                  Some great placeholder content for the first featurette here.
-                  Imagine some exciting prose here.
+                {{item.deskripsi | strippedContent}}
                 </p>
               </div>
               <!-- /card-body -->
             </div>
             <div class="col-md-5">
+               
               <img
-                src="https://cdn0-production-images-kly.akamaized.net/EUR5CI15V64a_iidhMQyOHZtWIU=/640x640/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/3153869/original/063163600_1592288896-pexels-photo-1996330.jpeg"
-                class="img-fluid mx-auto"
+                :src="storage + '/' + item.photo"
+                class="img-fluid mx-auto float-right"
                 width="500"
                 height="500"
+                style="width: 450px; height: 450px; object-fit: cover;"
               />
             </div>
           </div>
@@ -64,33 +63,44 @@
         <!-- /card -->
       </div>
       <!-- / v-for -->
-    </section>
 
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center" style="margin-top: 2.8rem;">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-            <span class="sr-only">Previous</span>
-          </a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-            <span class="sr-only">Next</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+      <div class="mt-5">
+        <pagination
+          :data="treatData"
+          :limit="2"
+          :align="'center'"
+          @pagination-change-page="getResults"
+        ></pagination>
+      </div>
+
+    </section>
 
   </div>
 </template>
 
 <script>
 export default {
-  props: ["home"]
+  props: ["home", "storage"],
+  data() {
+    return {
+      url: "/admin/treat/all-treat",
+      treatData: {}
+    };
+  },
+  methods:{
+    getResults(page = 1) {
+      axios.get(`${this.url}?page=${page}`).then(res => {
+        this.treatData = res.data;
+      });
+    },
+  },
+  filters: {
+    strippedContent(string) {
+      return string.replace(/<\/?[^>]+>/gi, " ");
+    }
+  },
+  mounted() {
+    this.getResults();
+  }
 };
 </script>

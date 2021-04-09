@@ -15,7 +15,8 @@ class TreatController extends Controller
 
     public function show($slug)
     {
-        return view('treat.show');
+        $treat = Treat::where('slug','=',$slug)->firstOrFail();
+        return view('treat.show', ['treat' => $treat]);
     }
 
     public function create(Request $request)

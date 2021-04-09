@@ -5,11 +5,13 @@
         {{pet.nama}}
       </h1>
       <div class="post-thumbnail header row mb-3">
-        <img
-          :src="storage + '/' + pet.photo"
-          alt="6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya"
-          class="img-thumbnail"
-        />
+        <div class="embed-responsive embed-responsive-16by9">
+          <img
+            :src="storage + '/' + pet.photo"
+            class="card-img-top embed-responsive-item obj-fit-cover img-thumbnail"
+            alt="animal"
+          />
+        </div>
       </div>
       
       <div class="desc-container" v-html="pet.deskripsi"></div>

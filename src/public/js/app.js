@@ -2548,6 +2548,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['pet', 'storage']
 });
@@ -5710,19 +5712,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["home"]
+  props: ["home", "storage"],
+  data: function data() {
+    return {
+      url: "/admin/treat/all-treat",
+      treatData: {}
+    };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get("".concat(this.url, "?page=").concat(page)).then(function (res) {
+        _this.treatData = res.data;
+      });
+    }
+  },
+  filters: {
+    strippedContent: function strippedContent(string) {
+      return string.replace(/<\/?[^>]+>/gi, " ");
+    }
+  },
+  mounted: function mounted() {
+    this.getResults();
+  }
 });
 
 /***/ }),
@@ -5758,40 +5773,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['treat', 'storage']
+});
 
 /***/ }),
 
@@ -73498,13 +73482,13 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "post-thumbnail header row mb-3" }, [
-        _c("img", {
-          staticClass: "img-thumbnail",
-          attrs: {
-            src: _vm.storage + "/" + _vm.pet.photo,
-            alt: "6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya"
-          }
-        })
+        _c("div", { staticClass: "embed-responsive embed-responsive-16by9" }, [
+          _c("img", {
+            staticClass:
+              "card-img-top embed-responsive-item obj-fit-cover img-thumbnail",
+            attrs: { src: _vm.storage + "/" + _vm.pet.photo, alt: "animal" }
+          })
+        ])
       ]),
       _vm._v(" "),
       _c("div", {
@@ -78668,9 +78652,9 @@ var render = function() {
           _vm._v("Cara merawat hewan")
         ]),
         _vm._v(" "),
-        _vm._l(4, function(n) {
-          return _c("div", { key: n }, [
-            n % 2 == 0
+        _vm._l(_vm.treatData.data, function(item, index) {
+          return _c("div", { key: item.id }, [
+            index % 2 == 0
               ? _c("div", { staticClass: "card border-0 shadow-sm mt-4" }, [
                   _c("div", { staticClass: "row align-items-center" }, [
                     _c("div", { staticClass: "col-md-7 order-md-2" }, [
@@ -78679,20 +78663,50 @@ var render = function() {
                           "a",
                           {
                             staticClass: "text-decoration-none",
-                            attrs: { href: _vm.home + "/treat/" + n }
+                            attrs: { href: _vm.home + "/treat/" + item.slug }
                           },
-                          [_vm._m(0, true)]
+                          [
+                            _c(
+                              "h2",
+                              { staticClass: "featurette-heading truncate-2" },
+                              [
+                                _vm._v(
+                                  "\n                  " +
+                                    _vm._s(item.judul) +
+                                    "\n                "
+                                )
+                              ]
+                            )
+                          ]
                         ),
                         _vm._v(" "),
                         _c("p", { staticClass: "lead truncate-3" }, [
                           _vm._v(
-                            "\n                Another featurette? Of course. More placeholder content here\n                to give you an idea of how this layout would work with some\n                actual real-world content in place.\n              "
+                            "\n              " +
+                              _vm._s(
+                                _vm._f("strippedContent")(item.deskripsi)
+                              ) +
+                              "\n              "
                           )
                         ])
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(1, true)
+                    _c("div", { staticClass: "col-md-5 order-md-1" }, [
+                      _c("img", {
+                        staticClass: "img-fluid mx-auto",
+                        staticStyle: {
+                          width: "450px",
+                          height: "450px",
+                          "object-fit": "cover"
+                        },
+                        attrs: {
+                          src: _vm.storage + "/" + item.photo,
+                          width: "500",
+                          height: "500"
+                        }
+                      })
+                    ])
                   ])
                 ])
               : _c("div", { staticClass: "card border-0 shadow-sm mt-4" }, [
@@ -78703,152 +78717,72 @@ var render = function() {
                           "a",
                           {
                             staticClass: "text-decoration-none",
-                            attrs: { href: _vm.home + "/treat/" + n }
+                            attrs: { href: _vm.home + "/treat/" + item.slug }
                           },
-                          [_vm._m(2, true)]
+                          [
+                            _c(
+                              "h2",
+                              { staticClass: "featurette-heading truncate-2" },
+                              [
+                                _vm._v(
+                                  "\n                  " +
+                                    _vm._s(item.judul) +
+                                    "\n                "
+                                )
+                              ]
+                            )
+                          ]
                         ),
                         _vm._v(" "),
                         _c("p", { staticClass: "lead truncate-3" }, [
                           _vm._v(
-                            "\n                Some great placeholder content for the first featurette here.\n                Imagine some exciting prose here.\n              "
+                            "\n              " +
+                              _vm._s(
+                                _vm._f("strippedContent")(item.deskripsi)
+                              ) +
+                              "\n              "
                           )
                         ])
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(3, true)
+                    _c("div", { staticClass: "col-md-5" }, [
+                      _c("img", {
+                        staticClass: "img-fluid mx-auto float-right",
+                        staticStyle: {
+                          width: "450px",
+                          height: "450px",
+                          "object-fit": "cover"
+                        },
+                        attrs: {
+                          src: _vm.storage + "/" + item.photo,
+                          width: "500",
+                          height: "500"
+                        }
+                      })
+                    ])
                   ])
                 ])
           ])
-        })
+        }),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "mt-5" },
+          [
+            _c("pagination", {
+              attrs: { data: _vm.treatData, limit: 2, align: "center" },
+              on: { "pagination-change-page": _vm.getResults }
+            })
+          ],
+          1
+        )
       ],
       2
-    ),
-    _vm._v(" "),
-    _vm._m(4)
+    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h2", { staticClass: "featurette-heading truncate-2" }, [
-      _vm._v(
-        "\n                  Oh yeah, it’s that good.\n                  "
-      ),
-      _c("span", { staticClass: "text-muted" }, [_vm._v("See for yourself.")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-5 order-md-1" }, [
-      _c("img", {
-        staticClass: "img-fluid mx-auto",
-        attrs: {
-          src:
-            "https://image-cdn.medkomtek.com/iLuvjdBdG9YQAec8KoMHHokI4z0=/640x640/smart/klikdokter-media-buckets/medias/2309767/original/033781000_1575535270-Risiko-Makan-Daging-Anjing-bagi-Kesehatan-by-soloway-123rf-36321023_s.jpg",
-          width: "500",
-          height: "500"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h2", { staticClass: "featurette-heading truncate-2" }, [
-      _vm._v(
-        "\n                  First featurette heading.\n                  "
-      ),
-      _c("span", { staticClass: "text-muted" }, [
-        _vm._v("It’ll blow your mind.")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-5" }, [
-      _c("img", {
-        staticClass: "img-fluid mx-auto",
-        attrs: {
-          src:
-            "https://cdn0-production-images-kly.akamaized.net/EUR5CI15V64a_iidhMQyOHZtWIU=/640x640/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/3153869/original/063163600_1592288896-pexels-photo-1996330.jpeg",
-          width: "500",
-          height: "500"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c(
-        "ul",
-        {
-          staticClass: "pagination justify-content-center",
-          staticStyle: { "margin-top": "2.8rem" }
-        },
-        [
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                attrs: { href: "#", "aria-label": "Previous" }
-              },
-              [
-                _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
-                _vm._v(" "),
-                _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")])
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("1")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("2")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("3")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                attrs: { href: "#", "aria-label": "Next" }
-              },
-              [
-                _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
-                _vm._v(" "),
-                _c("span", { staticClass: "sr-only" }, [_vm._v("Next")])
-              ]
-            )
-          ])
-        ]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -78871,71 +78805,30 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("section", { staticClass: "mt-3 detail-data" }, [
-        _c("h1", { staticClass: "entry-title h3" }, [
-          _vm._v(
-            "\n      6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya\n    "
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "post-thumbnail header row mb-3" }, [
-          _c("img", {
-            staticClass: "img-thumbnail",
-            attrs: {
-              src:
-                "https://i2.wp.com/hewanpedia.com/wp-content/uploads/2021/03/Guppy-Crown-Tail.jpg?resize=1200%2C640&ssl=1",
-              alt: "6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n      Untuk para penggemar ikan hias pasti mengetahui jenis ikan guppy ini.\n      Ikan yang mempunyai nama ilmiah poecilla reticulata ini biasa ditemukan\n      pada habitat yang mempunyai arus air yang tenang, Ikan ini sebenarnya\n      bukanlah ikan hias namun ikan yang digunakan untuk membasmi malaria atau\n      jentik nyamuk.\n    "
-          )
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n      Namun ikan guppy yang hidup liar tersebut jauh berbeda dengan ikan guppy\n      yang sengaja dibudidaya karena mempunyai corak warna yang sangat menawan\n      yang membuat hewan air ini menjadi ikan hias guppy. Banyak sekali yang\n      hampir tidak bisa membedakan antara ikan guppy ini dengan ikan cupang\n      namun ikan guppy ini lebih mempunyai corak yang menawan dan lebih jinak\n      untuk di taruh pada aquarium kamu. Ikan ini juga termasuk dalam ikan\n      hias air tawar terindah.\n    "
-          )
-        ]),
-        _vm._v(" "),
-        _c("h3", [
-          _c("span", {
-            staticClass: "ez-toc-section",
-            attrs: { id: "1_Ikan_Guppy_Green_Red_Dragon" }
-          }),
-          _vm._v("1. Ikan Guppy Green Red Dragon"),
-          _c("span", { staticClass: "ez-toc-section-end" })
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _c("img", {
-            attrs: {
-              src:
-                "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/03/Guppy-Green-Red-Dragon.jpg?resize=1080%2C608&#038;ssl=1"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n      Jenis ikan guppy ini merupakan jenis ikan yang sangat populer dikalangan\n      para penghobi ikan hias guppy. Ikan ini bisa termasuk dalam harga ikan\n      guppy termahal karena harganya sangat mahal bisa mencapai 1 jutaan.\n      mungkin kamu bertanya – tanya kenapa ikan ini sangatlah mahal ?\n      ikan ini mempunyai corak yang sangat bagus dan juga pergerakannya yang\n      sangat menawan saat di dalam air.\n    "
-          )
-        ])
-      ])
+  return _c("div", { staticClass: "container" }, [
+    _c("section", { staticClass: "mt-3 detail-data" }, [
+      _c("h1", { staticClass: "entry-title h3" }, [
+        _vm._v("\n      " + _vm._s(_vm.treat.judul) + "\n    ")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "post-thumbnail header row mb-3" }, [
+        _c("img", {
+          staticClass: "img-thumbnail",
+          attrs: {
+            src: _vm.storage + "/" + _vm.treat.photo,
+            alt: "6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya"
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", {
+        staticClass: "desc-container",
+        domProps: { innerHTML: _vm._s(_vm.treat.deskripsi) }
+      })
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
