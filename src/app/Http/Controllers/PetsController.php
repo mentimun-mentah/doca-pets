@@ -10,7 +10,8 @@ class PetsController extends Controller
 {
     public function show($slug)
     {
-        return view('petshow');
+        $pet = Pet::where('slug','=',$slug)->firstOrFail();
+        return view('petshow',['pet' => $pet]);
     }
 
     public function create(Request $request)
@@ -44,7 +45,7 @@ class PetsController extends Controller
       if($request->q) $query->where('nama','LIKE','%'.$request->q.'%');
       if($request->jenis) $query->where('jenis','=',$request->jenis);
 
-      return $query->paginate(6);
+      return $query->orderBy('id', 'desc')->paginate(6);
     }
 
     public function update(Request $request)

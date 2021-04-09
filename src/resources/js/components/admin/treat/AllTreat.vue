@@ -34,7 +34,7 @@
     <!-- Page content -->
     <div class="container-fluid mt--6">
       <div class="header-body">
-        <div class="row">
+        <div class="row" v-if="treatData.data && treatData.data.length > 0">
           <div
             class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
             v-for="treat in treatData.data"
@@ -67,6 +67,18 @@
           <!--/col-xl-3-->
         </div>
         <!-- /row -->
+
+        <div class="row justify-content-md-center mt-5" v-else>
+          <div class="col-12">
+            <div class="card shadow-none text-center pt-5 pb-5" style="background-color:transparent;">
+              <div class="card-body mt-5 text-gray">
+                <i class="fal fa-box-open fa-3x mt-5"></i>
+                <p class="font-weight-bold mt-1">Data tidak tersedia.</p>
+              </div>
+            </div>
+          </div>
+        </div><!-- /row -->
+
       </div>
       <!-- /header-body -->
 

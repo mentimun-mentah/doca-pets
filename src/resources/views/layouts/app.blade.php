@@ -218,12 +218,14 @@
                   class="dropdown-menu dropdown-menu-right"
                   aria-labelledby="navbarDropdown"
                 >
+                  @if(Auth::user()->role == 'admin')
                   <a
                     class="dropdown-item"
                     href="{{url('/admin/list-doctor')}}"
                   >
                     Admin
                   </a>
+                  @endif
                   <a
                     class="dropdown-item"
                     href="{{url('/account')}}"

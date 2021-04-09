@@ -76,7 +76,7 @@
             <div class="card shadow-none text-center pt-5 pb-5" style="background-color:transparent;">
               <div class="card-body mt-5 text-gray">
                 <i class="fal fa-box-open fa-3x mt-5"></i>
-                <p class="font-weight-bold mt-1">Hewan tidak di temukan.</p>
+                <p class="font-weight-bold mt-1">Data tidak tersedia.</p>
               </div>
             </div>
           </div>

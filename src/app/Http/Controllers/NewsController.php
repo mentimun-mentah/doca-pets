@@ -38,7 +38,7 @@ class NewsController extends Controller
     public function getAllNews(Request $request)
     {
         $query = News::query();
-        return $query->paginate(6);
+        return $query->orderBy('id', 'desc')->paginate(6);
     }
 
     public function update(Request $request)

@@ -2455,42 +2455,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['home'],
+  props: ['home', 'storage'],
   data: function data() {
     return {
-      show: false
+      show: false,
+      url: '/admin/pet/all-pet',
+      petsData: {},
+      newsData: {},
+      q: '',
+      jenis: 'all',
+      jenis_q: ''
     };
   },
-  mounted: function mounted() {
-    var _this = this;
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
 
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get("".concat(this.url, "?page=").concat(page, "&q=").concat(this.q, "&jenis=").concat(this.jenis_q)).then(function (res) {
+        _this.petsData = res.data;
+      });
+    },
+    getNews: function getNews() {
+      var _this2 = this;
+
+      axios.get('/admin/news/all-news').then(function (res) {
+        _this2.newsData = res.data.data[0];
+      });
+    }
+  },
+  watch: {
+    q: function q(val) {
+      this.getResults();
+    },
+    jenis: function jenis(val) {
+      if (val != 'all') {
+        this.jenis_q = this.jenis;
+        this.getResults();
+      } else {
+        this.jenis_q = '';
+        this.getResults();
+      }
+    }
+  },
+  filters: {
+    strippedContent: function strippedContent(string) {
+      return string.replace(/<\/?[^>]+>/ig, " ");
+    }
+  },
+  mounted: function mounted() {
+    var _this3 = this;
+
+    this.getResults();
+    this.getNews();
     setTimeout(function () {
-      _this.show = true;
+      _this3.show = true;
     }, 500);
   }
 });
@@ -2528,38 +2548,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['pet', 'storage']
+});
 
 /***/ }),
 
@@ -3165,6 +3156,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['storage'],
   data: function data() {
@@ -3422,6 +3425,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4547,6 +4562,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["storage", "admin"],
   data: function data() {
@@ -5562,39 +5589,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["home"]
+  props: ["home", "storage"],
+  data: function data() {
+    return {
+      url: '/admin/news/all-news',
+      newsData: {}
+    };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get("".concat(this.url, "?page=").concat(page)).then(function (res) {
+        _this.newsData = res.data;
+      });
+    }
+  },
+  filters: {
+    strippedContent: function strippedContent(string) {
+      return string.replace(/<\/?[^>]+>/ig, " ");
+    }
+  },
+  mounted: function mounted() {
+    this.getResults();
+  }
 });
 
 /***/ }),
@@ -10456,7 +10476,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.detail-data img {\n  width: 100%;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.detail-data img {\n  width: 100%;\n}\n.desc-container * {\n  background-color: inherit!important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -73156,60 +73176,182 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "container" }, [
-        _c("section", { staticClass: "mt-3" }, [
-          _c(
-            "h1",
-            { staticClass: "display-5 mb-4 font-weight-bold text-center" },
-            [_vm._v("\n        Jenis Anjing & Kucing\n      ")]
-          ),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "row" },
-            _vm._l(6, function(n) {
-              return _c(
-                "div",
-                { key: n, staticClass: "col col-lg-4 col-md-6 col-sm-12" },
-                [
-                  _c("div", { staticClass: "card card-shadow-hover mb-3" }, [
-                    _vm._m(1, true),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "card-body" }, [
-                      _c("h5", { staticClass: "card-title truncate-2" }, [
-                        _vm._v("Ini Anjing")
-                      ]),
-                      _vm._v(" "),
-                      _c("p", { staticClass: "card-text truncate-3" }, [
-                        _vm._v(
-                          "\n                Some quick example text to build on the card title the bulk of\n                the card's content. Some quick example text to build on the card title the bulk of\n                the card's content.\n              "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "a",
+      _c(
+        "div",
+        { staticClass: "container" },
+        [
+          _c("section", { staticClass: "mt-3" }, [
+            _c(
+              "h1",
+              { staticClass: "display-5 mb-4 font-weight-bold text-center" },
+              [_vm._v("\n        Jenis Anjing & Kucing\n      ")]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-sm-12 col-md-6 col-lg-8" }, [
+                _c("div", { staticClass: "form-group has-search" }, [
+                  _c("span", {
+                    staticClass: "fa fa-search form-control-feedback"
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.q,
+                        expression: "q"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Cari hewan" },
+                    domProps: { value: _vm.q },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.q = $event.target.value
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-sm-12 col-md-6 col-lg-4" }, [
+                _c("div", { staticClass: "form-group" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
                         {
-                          staticClass: "btn btn-outline-secondary btn-sm",
-                          attrs: {
-                            href: _vm.home + "/pet/" + n,
-                            role: "button"
-                          }
-                        },
-                        [_vm._v("Selengkapnya")]
-                      )
-                    ])
-                  ])
-                ]
-              )
-            }),
-            0
-          )
-        ]),
-        _vm._v(" "),
-        _vm._m(2)
-      ]),
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.jenis,
+                          expression: "jenis"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { id: "inputState" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.jenis = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "all" } }, [
+                        _vm._v("All")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "anjing" } }, [
+                        _vm._v("Anjing")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "kucing" } }, [
+                        _vm._v("Kucing")
+                      ])
+                    ]
+                  )
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _vm.petsData.data && _vm.petsData.data.length > 0
+              ? _c(
+                  "div",
+                  { staticClass: "row" },
+                  _vm._l(_vm.petsData.data, function(pet) {
+                    return _c(
+                      "div",
+                      {
+                        key: pet.id,
+                        staticClass: "col col-lg-4 col-md-6 col-sm-12"
+                      },
+                      [
+                        _c(
+                          "div",
+                          { staticClass: "card card-shadow-hover mb-3" },
+                          [
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "embed-responsive embed-responsive-16by9"
+                              },
+                              [
+                                _c("img", {
+                                  staticClass:
+                                    "card-img-top embed-responsive-item obj-fit-cover",
+                                  attrs: {
+                                    src: _vm.storage + "/pet/" + pet.photo,
+                                    alt: "animal"
+                                  }
+                                })
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "card-body" }, [
+                              _c(
+                                "h5",
+                                { staticClass: "card-title truncate-2" },
+                                [_vm._v(_vm._s(pet.nama))]
+                              ),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "card-text truncate-3" }, [
+                                _vm._v(
+                                  "\n              " +
+                                    _vm._s(
+                                      _vm._f("strippedContent")(pet.deskripsi)
+                                    ) +
+                                    "\n              "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "a",
+                                {
+                                  staticClass:
+                                    "btn btn-outline-secondary btn-sm",
+                                  attrs: {
+                                    href: _vm.home + "/pet/" + pet.slug,
+                                    role: "button"
+                                  }
+                                },
+                                [_vm._v("Selengkapnya")]
+                              )
+                            ])
+                          ]
+                        )
+                      ]
+                    )
+                  }),
+                  0
+                )
+              : _c(
+                  "div",
+                  { staticClass: "row justify-content-md-center mt-3" },
+                  [_vm._m(0)]
+                )
+          ]),
+          _vm._v(" "),
+          _c("pagination", {
+            attrs: { data: _vm.petsData, limit: 2, align: "center" },
+            on: { "pagination-change-page": _vm.getResults }
+          })
+        ],
+        1
+      ),
       _vm._v(" "),
       _vm.show
         ? _c("div", { staticClass: "modal-backdrop fade show" })
@@ -73245,7 +73387,9 @@ var render = function() {
                           },
                           [
                             _vm._v(
-                              "\n              Ini Anjing hilang\n            "
+                              "\n              " +
+                                _vm._s(_vm.newsData.judul) +
+                                "\n            "
                             )
                           ]
                         ),
@@ -73273,29 +73417,21 @@ var render = function() {
                         _c("img", {
                           staticClass: "img-fluid w-100",
                           attrs: {
-                            src:
-                              "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
+                            src: _vm.storage + "/news/" + _vm.newsData.photo,
                             alt: "img-animal"
                           }
                         }),
                         _vm._v(" "),
-                        _c("h6", { staticClass: "my-3" }, [
-                          _vm._v("Deskripsi")
+                        _c("h6", { staticClass: "my-3 font-weight-bold" }, [
+                          _c("u", [_vm._v("Deskripsi")])
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "deskripsi" }, [
-                          _c("p", [
-                            _vm._v(
-                              "\n                Untuk para penggemar ikan hias pasti mengetahui jenis ikan\n                guppy ini. Ikan yang mempunyai nama ilmiah poecilla reticulata\n                ini biasa ditemukan pada habitat yang mempunyai arus air yang\n                tenang, Ikan ini sebenarnya bukanlah ikan hias namun ikan yang\n                digunakan untuk membasmi malaria atau jentik nyamuk.\n              "
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("p", [
-                            _vm._v(
-                              "\n                Namun ikan guppy yang hidup liar tersebut jauh berbeda dengan\n                ikan guppy yang sengaja dibudidaya karena mempunyai corak\n                warna yang sangat menawan yang membuat hewan air ini menjadi\n                ikan hias guppy. Banyak sekali yang hampir tidak bisa\n                membedakan antara ikan guppy ini dengan ikan cupang namun ikan\n                guppy ini lebih mempunyai corak yang menawan dan lebih jinak\n                untuk di taruh pada aquarium kamu. Ikan ini juga termasuk\n                dalam ikan hias air tawar terindah.\n              "
-                            )
-                          ])
-                        ])
+                        _c("div", {
+                          staticClass: "deskripsi",
+                          domProps: {
+                            innerHTML: _vm._s(_vm.newsData.deskripsi)
+                          }
+                        })
                       ])
                     ])
                   ]
@@ -73313,108 +73449,23 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-12 col-md-6 col-lg-8" }, [
-        _c("div", { staticClass: "form-group has-search" }, [
-          _c("span", { staticClass: "fa fa-search form-control-feedback" }),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Cari hewan" }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-12 col-md-6 col-lg-4" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c(
-            "select",
-            { staticClass: "form-control", attrs: { id: "inputState" } },
-            [
-              _c("option", [_vm._v("All")]),
-              _vm._v(" "),
-              _c("option", [_vm._v("Anjing")]),
-              _vm._v(" "),
-              _c("option", [_vm._v("Kucing")])
-            ]
-          )
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "embed-responsive embed-responsive-16by9" },
-      [
-        _c("img", {
-          staticClass: "card-img-top embed-responsive-item obj-fit-cover",
-          attrs: {
-            src:
-              "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-            alt: "animal"
-          }
-        })
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c("ul", { staticClass: "pagination justify-content-center mt-4" }, [
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Previous" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("1")
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5 border-0",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body text-black-50" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-4x" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
           ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("2")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("3")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Next" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Next")])
-            ]
-          )
-        ])
-      ])
+        ]
+      )
     ])
   }
 ]
@@ -73440,71 +73491,30 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("section", { staticClass: "mt-3 detail-data" }, [
-        _c("h1", { staticClass: "entry-title h3" }, [
-          _vm._v(
-            "\n      6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya\n    "
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "post-thumbnail header row mb-3" }, [
-          _c("img", {
-            staticClass: "img-thumbnail",
-            attrs: {
-              src:
-                "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/03/Guppy-Green-Red-Dragon.jpg?resize=1080%2C608&#038;ssl=1",
-              alt: "6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n      Untuk para penggemar ikan hias pasti mengetahui jenis ikan guppy ini.\n      Ikan yang mempunyai nama ilmiah poecilla reticulata ini biasa ditemukan\n      pada habitat yang mempunyai arus air yang tenang, Ikan ini sebenarnya\n      bukanlah ikan hias namun ikan yang digunakan untuk membasmi malaria atau\n      jentik nyamuk.\n    "
-          )
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n      Namun ikan guppy yang hidup liar tersebut jauh berbeda dengan ikan guppy\n      yang sengaja dibudidaya karena mempunyai corak warna yang sangat menawan\n      yang membuat hewan air ini menjadi ikan hias guppy. Banyak sekali yang\n      hampir tidak bisa membedakan antara ikan guppy ini dengan ikan cupang\n      namun ikan guppy ini lebih mempunyai corak yang menawan dan lebih jinak\n      untuk di taruh pada aquarium kamu. Ikan ini juga termasuk dalam ikan\n      hias air tawar terindah.\n    "
-          )
-        ]),
-        _vm._v(" "),
-        _c("h3", [
-          _c("span", {
-            staticClass: "ez-toc-section",
-            attrs: { id: "1_Ikan_Guppy_Green_Red_Dragon" }
-          }),
-          _vm._v("1. Ikan Guppy Green Red Dragon"),
-          _c("span", { staticClass: "ez-toc-section-end" })
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _c("img", {
-            attrs: {
-              src:
-                "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/03/Guppy-Green-Red-Dragon.jpg?resize=1080%2C608&#038;ssl=1"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v(
-            "\n      Jenis ikan guppy ini merupakan jenis ikan yang sangat populer dikalangan\n      para penghobi ikan hias guppy. Ikan ini bisa termasuk dalam harga ikan\n      guppy termahal karena harganya sangat mahal bisa mencapai 1 jutaan.\n      mungkin kamu bertanya – tanya kenapa ikan ini sangatlah mahal ?\n      ikan ini mempunyai corak yang sangat bagus dan juga pergerakannya yang\n      sangat menawan saat di dalam air.\n    "
-          )
-        ])
-      ])
+  return _c("div", { staticClass: "container" }, [
+    _c("section", { staticClass: "mt-3 detail-data" }, [
+      _c("h1", { staticClass: "entry-title h3" }, [
+        _vm._v("\n      " + _vm._s(_vm.pet.nama) + "\n    ")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "post-thumbnail header row mb-3" }, [
+        _c("img", {
+          staticClass: "img-thumbnail",
+          attrs: {
+            src: _vm.storage + "/" + _vm.pet.photo,
+            alt: "6 Jenis dan Harga Ikan Guppy serta Cara Merawatnya"
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", {
+        staticClass: "desc-container",
+        domProps: { innerHTML: _vm._s(_vm.pet.deskripsi) }
+      })
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -74675,7 +74685,11 @@ var render = function() {
                   }),
                   0
                 )
-              : _vm._e()
+              : _c(
+                  "div",
+                  { staticClass: "row justify-content-md-center mt-5" },
+                  [_vm._m(3)]
+                )
           ]),
           _vm._v(" "),
           _c("pagination", {
@@ -74741,6 +74755,29 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("p", { staticClass: "mb-0" }, [
       _c("small", [_vm._v("Surat Izin")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body mt-5 text-gray" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-3x mt-5" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
+          ])
+        ]
+      )
     ])
   }
 ]
@@ -75022,98 +75059,111 @@ var render = function() {
         { staticClass: "container-fluid mt--6" },
         [
           _c("div", { staticClass: "header-body" }, [
-            _c(
-              "div",
-              { staticClass: "row" },
-              _vm._l(_vm.newsData.data, function(news) {
-                return _c(
+            _vm.newsData.data && _vm.newsData.data.length > 0
+              ? _c(
                   "div",
-                  {
-                    key: news.id,
-                    staticClass: "col-xl-4 col-lg-6 col-md-6 col-sm-12 m-b-20"
-                  },
-                  [
-                    _c("div", { staticClass: "card" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "embed-responsive embed-responsive-16by9"
-                        },
-                        [
-                          _c("img", {
-                            staticClass:
-                              "card-img-top embed-responsive-item obj-fit-cover",
-                            attrs: {
-                              src: _vm.storage + "/" + news.photo,
-                              alt: "Card image cap"
-                            }
-                          })
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "card-body" },
-                        [
-                          _c("a", { attrs: { href: "#" } }, [
-                            _c(
-                              "h4",
-                              { staticClass: "card-title mt--3 truncate-2" },
-                              [_vm._v(_vm._s(news.judul))]
-                            )
-                          ]),
-                          _vm._v(" "),
+                  { staticClass: "row" },
+                  _vm._l(_vm.newsData.data, function(news) {
+                    return _c(
+                      "div",
+                      {
+                        key: news.id,
+                        staticClass:
+                          "col-xl-4 col-lg-6 col-md-6 col-sm-12 m-b-20"
+                      },
+                      [
+                        _c("div", { staticClass: "card" }, [
                           _c(
-                            "p",
+                            "div",
                             {
-                              staticClass: "card-text mt--3 truncate-3",
-                              staticStyle: { "font-size": "12px" }
+                              staticClass:
+                                "embed-responsive embed-responsive-16by9"
                             },
                             [
-                              _vm._v(
-                                "\n              " +
-                                  _vm._s(
-                                    _vm._f("strippedContent")(news.deskripsi)
-                                  ) +
-                                  "\n              "
-                              )
+                              _c("img", {
+                                staticClass:
+                                  "card-img-top embed-responsive-item obj-fit-cover",
+                                attrs: {
+                                  src: _vm.storage + "/" + news.photo,
+                                  alt: "Card image cap"
+                                }
+                              })
                             ]
                           ),
                           _vm._v(" "),
-                          _c("center", [
-                            _c(
-                              "a",
-                              {
-                                staticClass: "btn btn-default btn-sm m-r-0",
-                                attrs: {
-                                  href: _vm.admin + "/change-news/" + news.id
-                                }
-                              },
-                              [_vm._v("Ubah")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger btn-sm",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.deleteNews(news.id)
-                                  }
-                                }
-                              },
-                              [_vm._v("Hapus")]
-                            )
-                          ])
-                        ],
-                        1
-                      )
-                    ])
-                  ]
+                          _c(
+                            "div",
+                            { staticClass: "card-body" },
+                            [
+                              _c("a", { attrs: { href: "#" } }, [
+                                _c(
+                                  "h4",
+                                  {
+                                    staticClass: "card-title mt--3 truncate-2"
+                                  },
+                                  [_vm._v(_vm._s(news.judul))]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "p",
+                                {
+                                  staticClass: "card-text mt--3 truncate-3",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n              " +
+                                      _vm._s(
+                                        _vm._f("strippedContent")(
+                                          news.deskripsi
+                                        )
+                                      ) +
+                                      "\n              "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("center", [
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-default btn-sm m-r-0",
+                                    attrs: {
+                                      href:
+                                        _vm.admin + "/change-news/" + news.id
+                                    }
+                                  },
+                                  [_vm._v("Ubah")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteNews(news.id)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Hapus")]
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ])
+                      ]
+                    )
+                  }),
+                  0
                 )
-              }),
-              0
-            )
+              : _c(
+                  "div",
+                  { staticClass: "row justify-content-md-center mt-5" },
+                  [_vm._m(1)]
+                )
           ]),
           _vm._v(" "),
           _c("pagination", {
@@ -75169,6 +75219,29 @@ var staticRenderFns = [
           ])
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body mt-5 text-gray" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-3x mt-5" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
+          ])
+        ]
+      )
     ])
   }
 ]
@@ -75999,7 +76072,7 @@ var staticRenderFns = [
             _c("i", { staticClass: "fal fa-box-open fa-3x mt-5" }),
             _vm._v(" "),
             _c("p", { staticClass: "font-weight-bold mt-1" }, [
-              _vm._v("Hewan tidak di temukan.")
+              _vm._v("Data tidak tersedia.")
             ])
           ])
         ]
@@ -76579,98 +76652,110 @@ var render = function() {
         { staticClass: "container-fluid mt--6" },
         [
           _c("div", { staticClass: "header-body" }, [
-            _c(
-              "div",
-              { staticClass: "row" },
-              _vm._l(_vm.treatData.data, function(treat) {
-                return _c(
+            _vm.treatData.data && _vm.treatData.data.length > 0
+              ? _c(
                   "div",
-                  {
-                    key: treat.id,
-                    staticClass: "col-xl-4 col-lg-4 col-md-6 col-sm-12"
-                  },
-                  [
-                    _c("div", { staticClass: "card" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "embed-responsive embed-responsive-16by9"
-                        },
-                        [
-                          _c("img", {
-                            staticClass:
-                              "card-img-top embed-responsive-item obj-fit-cover",
-                            attrs: {
-                              src: _vm.storage + "/" + treat.photo,
-                              alt: "Card image cap"
-                            }
-                          })
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "card-body" },
-                        [
-                          _c("a", { attrs: { href: "#" } }, [
-                            _c(
-                              "h4",
-                              { staticClass: "card-title mt--3 truncate-2" },
-                              [_vm._v(_vm._s(treat.judul))]
-                            )
-                          ]),
-                          _vm._v(" "),
+                  { staticClass: "row" },
+                  _vm._l(_vm.treatData.data, function(treat) {
+                    return _c(
+                      "div",
+                      {
+                        key: treat.id,
+                        staticClass: "col-xl-4 col-lg-4 col-md-6 col-sm-12"
+                      },
+                      [
+                        _c("div", { staticClass: "card" }, [
                           _c(
-                            "p",
+                            "div",
                             {
-                              staticClass: "card-text mt--3 truncate-3",
-                              staticStyle: { "font-size": "12px" }
+                              staticClass:
+                                "embed-responsive embed-responsive-16by9"
                             },
                             [
-                              _vm._v(
-                                "\n                " +
-                                  _vm._s(
-                                    _vm._f("strippedContent")(treat.deskripsi)
-                                  ) +
-                                  "\n              "
-                              )
+                              _c("img", {
+                                staticClass:
+                                  "card-img-top embed-responsive-item obj-fit-cover",
+                                attrs: {
+                                  src: _vm.storage + "/" + treat.photo,
+                                  alt: "Card image cap"
+                                }
+                              })
                             ]
                           ),
                           _vm._v(" "),
-                          _c("center", [
-                            _c(
-                              "a",
-                              {
-                                staticClass: "btn btn-default btn-sm m-r-0",
-                                attrs: {
-                                  href: _vm.admin + "/change-treat/" + treat.id
-                                }
-                              },
-                              [_vm._v("Ubah")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger btn-sm",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.deleteTreat(treat.id)
-                                  }
-                                }
-                              },
-                              [_vm._v("Hapus")]
-                            )
-                          ])
-                        ],
-                        1
-                      )
-                    ])
-                  ]
+                          _c(
+                            "div",
+                            { staticClass: "card-body" },
+                            [
+                              _c("a", { attrs: { href: "#" } }, [
+                                _c(
+                                  "h4",
+                                  {
+                                    staticClass: "card-title mt--3 truncate-2"
+                                  },
+                                  [_vm._v(_vm._s(treat.judul))]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "p",
+                                {
+                                  staticClass: "card-text mt--3 truncate-3",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                " +
+                                      _vm._s(
+                                        _vm._f("strippedContent")(
+                                          treat.deskripsi
+                                        )
+                                      ) +
+                                      "\n              "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("center", [
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-default btn-sm m-r-0",
+                                    attrs: {
+                                      href:
+                                        _vm.admin + "/change-treat/" + treat.id
+                                    }
+                                  },
+                                  [_vm._v("Ubah")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteTreat(treat.id)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Hapus")]
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ])
+                      ]
+                    )
+                  }),
+                  0
                 )
-              }),
-              0
-            )
+              : _c(
+                  "div",
+                  { staticClass: "row justify-content-md-center mt-5" },
+                  [_vm._m(1)]
+                )
           ]),
           _vm._v(" "),
           _c("pagination", {
@@ -76726,6 +76811,29 @@ var staticRenderFns = [
           ])
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body mt-5 text-gray" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-3x mt-5" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
+          ])
+        ]
+      )
     ])
   }
 ]
@@ -78366,30 +78474,148 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "container" }, [
-      _c("section", { staticClass: "mt-3" }, [
-        _c("h2", { staticClass: "text-center h3 mb-3" }, [
-          _vm._v("Berita Kehilangan")
+    _c(
+      "div",
+      { staticClass: "container" },
+      [
+        _c("section", { staticClass: "mt-3" }, [
+          _c("h2", { staticClass: "text-center h3 mb-3" }, [
+            _vm._v("Berita Kehilangan")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "row" },
+            _vm._l(_vm.newsData.data, function(news) {
+              return _c(
+                "div",
+                {
+                  key: news.id,
+                  staticClass: "col col-lg-6 col-md-6 col-sm-12"
+                },
+                [
+                  _c("div", { staticClass: "card card-animal mb-3" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "embed-responsive embed-responsive-16by9"
+                      },
+                      [
+                        _c("img", {
+                          staticClass:
+                            "card-img-top embed-responsive-item obj-fit-cover",
+                          attrs: {
+                            src: _vm.storage + "/" + news.photo,
+                            alt: "animal"
+                          }
+                        })
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("h5", { staticClass: "card-title" }, [
+                        _vm._v(_vm._s(news.judul))
+                      ]),
+                      _vm._v(" "),
+                      _c("p", { staticClass: "card-text truncate-3" }, [
+                        _vm._v(
+                          "\n              " +
+                            _vm._s(_vm._f("strippedContent")(news.deskripsi)) +
+                            "\n              "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-outline-secondary btn-sm",
+                          attrs: {
+                            type: "button",
+                            "data-toggle": "modal",
+                            "data-target": "#staticBackdrop" + news.id
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                Selengkapnya\n              "
+                          )
+                        ]
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "modal fade",
+                      attrs: {
+                        id: "staticBackdrop" + news.id,
+                        "data-backdrop": "static",
+                        "data-keyboard": "false",
+                        tabindex: "-1",
+                        "aria-labelledby": "staticBackdropLabel",
+                        "aria-hidden": "true"
+                      }
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                        },
+                        [
+                          _c("div", { staticClass: "modal-content" }, [
+                            _c("div", { staticClass: "modal-header" }, [
+                              _c(
+                                "h5",
+                                {
+                                  staticClass: "modal-title",
+                                  attrs: { id: "staticBackdropLabel" }
+                                },
+                                [_vm._v(_vm._s(news.judul))]
+                              ),
+                              _vm._v(" "),
+                              _vm._m(0, true)
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "modal-body" }, [
+                              _c("img", {
+                                staticClass: "img-fluid w-100",
+                                attrs: {
+                                  src: _vm.storage + "/" + news.photo,
+                                  alt: "img-animal"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("h6", { staticClass: "my-3" }, [
+                                _vm._v("Deskripsi")
+                              ]),
+                              _vm._v(" "),
+                              _c("div", {
+                                staticClass: "deskripsi",
+                                domProps: { innerHTML: _vm._s(news.deskripsi) }
+                              })
+                            ])
+                          ])
+                        ]
+                      )
+                    ]
+                  )
+                ]
+              )
+            }),
+            0
+          )
         ]),
         _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row" },
-          _vm._l(6, function(n) {
-            return _c(
-              "div",
-              { key: n, staticClass: "col col-lg-6 col-md-6 col-sm-12" },
-              [_vm._m(0, true)]
-            )
-          }),
-          0
-        )
-      ]),
-      _vm._v(" "),
-      _vm._m(1)
-    ]),
-    _vm._v(" "),
-    _vm._m(2)
+        _c("pagination", {
+          attrs: { data: _vm.newsData, limit: 2, align: "center" },
+          on: { "pagination-change-page": _vm.getResults }
+        })
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = [
@@ -78397,180 +78623,17 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card card-animal mb-3" }, [
-      _c("img", {
-        staticClass: "card-img-top",
-        attrs: {
-          src:
-            "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-          alt: "animal"
-        }
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _c("h5", { staticClass: "card-title" }, [_vm._v("Ini Anjing hilang")]),
-        _vm._v(" "),
-        _c("p", { staticClass: "card-text truncate-3" }, [
-          _vm._v(
-            "\n                Anjing gua hilang di sekitaran jimbaran pada hari selasa lalu...\n                Walaupun canine enteric coronavirus sangat menular ke anjing lain, ia tidak menular pada manusia. Human coronavirus (SARS-CoV-2 atau COVID-19 dan sebelumnya disebut 2019-nCoV) adalah virus berbeda yang menyebabkan gejala pernapasan pada manusia dan tidak ada bukti ilmiah bahwa virus menyebabkan masalah pada anjing atau anjing adalah pembawa dari Itu. Namun, Pusat Pengendalian dan Pencegahan Penyakit (CDC) merekomendasikan bahwa jika teman-teman terinfeksi COVID-19 untuk menghindari atau membatasi kontak dengan hewan peliharaan teman-teman sampai informasi lebih lanjut tentang virus ini diketahui.\n              "
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-outline-secondary btn-sm",
-            attrs: {
-              type: "button",
-              "data-toggle": "modal",
-              "data-target": "#staticBackdrop"
-            }
-          },
-          [_vm._v("\n                Selengkapnya\n              ")]
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c("ul", { staticClass: "pagination justify-content-center mt-4" }, [
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Previous" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("1")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("2")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("3")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Next" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Next")])
-            ]
-          )
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c(
-      "div",
+      "button",
       {
-        staticClass: "modal fade",
+        staticClass: "close",
         attrs: {
-          id: "staticBackdrop",
-          "data-backdrop": "static",
-          "data-keyboard": "false",
-          tabindex: "-1",
-          "aria-labelledby": "staticBackdropLabel",
-          "aria-hidden": "true"
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
         }
       },
-      [
-        _c(
-          "div",
-          {
-            staticClass:
-              "modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [
-                _c(
-                  "h5",
-                  {
-                    staticClass: "modal-title",
-                    attrs: { id: "staticBackdropLabel" }
-                  },
-                  [_vm._v("Ini Anjing hilang")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "close",
-                    attrs: {
-                      type: "button",
-                      "data-dismiss": "modal",
-                      "aria-label": "Close"
-                    }
-                  },
-                  [
-                    _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("img", {
-                  staticClass: "img-fluid w-100",
-                  attrs: {
-                    src:
-                      "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-                    alt: "img-animal"
-                  }
-                }),
-                _vm._v(" "),
-                _c("h6", { staticClass: "my-3" }, [_vm._v("Deskripsi")]),
-                _vm._v(" "),
-                _c("div", { staticClass: "deskripsi" }, [
-                  _c("p", [
-                    _vm._v(
-                      "\n              Untuk para penggemar ikan hias pasti mengetahui jenis ikan guppy\n              ini. Ikan yang mempunyai nama ilmiah poecilla reticulata ini biasa\n              ditemukan pada habitat yang mempunyai arus air yang tenang, Ikan\n              ini sebenarnya bukanlah ikan hias namun ikan yang digunakan untuk\n              membasmi malaria atau jentik nyamuk.\n            "
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("p", [
-                    _vm._v(
-                      "\n              Namun ikan guppy yang hidup liar tersebut jauh berbeda dengan ikan\n              guppy yang sengaja dibudidaya karena mempunyai corak warna yang\n              sangat menawan yang membuat hewan air ini menjadi ikan hias guppy.\n              Banyak sekali yang hampir tidak bisa membedakan antara ikan guppy\n              ini dengan ikan cupang namun ikan guppy ini lebih mempunyai corak\n              yang menawan dan lebih jinak untuk di taruh pada aquarium kamu.\n              Ikan ini juga termasuk dalam ikan hias air tawar terindah.\n            "
-                    )
-                  ])
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
   }
 ]

@@ -30,7 +30,7 @@ class DoctorController extends Controller
       $doctor = Doctor::with('user');
       if($request->status) $doctor->where('status','=',$request->status);
 
-      return $doctor->paginate(6);
+      return $doctor->orderBy('id', 'desc')->paginate(6);
     }
 
     public function acceptDoctor($id)

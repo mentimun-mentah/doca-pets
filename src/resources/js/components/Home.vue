@@ -14,65 +14,58 @@
                 type="text"
                 class="form-control"
                 placeholder="Cari hewan"
+                v-model="q"
               />
             </div>
           </div>
           <div class="col-sm-12 col-md-6 col-lg-4">
             <div class="form-group">
-              <select id="inputState" class="form-control">
-                <option>All</option>
-                <option>Anjing</option>
-                <option>Kucing</option>
+              <select id="inputState" class="form-control" v-model="jenis">
+                <option value="all">All</option>
+                <option value="anjing">Anjing</option>
+                <option value="kucing">Kucing</option>
               </select>
             </div>
           </div>
         </div><!--/row-->
 
-        <div class="row">
-          <div class="col col-lg-4 col-md-6 col-sm-12" v-for="n in 6" :key="n">
+        <div class="row" v-if="petsData.data && petsData.data.length > 0">
+          <div class="col col-lg-4 col-md-6 col-sm-12" v-for="pet in petsData.data" :key="pet.id">
             <div class="card card-shadow-hover mb-3">
               <div class="embed-responsive embed-responsive-16by9">
                 <img
-                  src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1"
+                  :src="storage + '/pet/' + pet.photo"
                   class="card-img-top embed-responsive-item obj-fit-cover"
                   alt="animal"
                 />
               </div>
               <div class="card-body">
-                <h5 class="card-title truncate-2">Ini Anjing</h5>
+                <h5 class="card-title truncate-2">{{pet.nama}}</h5>
                 <p class="card-text truncate-3">
-                  Some quick example text to build on the card title the bulk of
-                  the card's content. Some quick example text to build on the card title the bulk of
-                  the card's content.
+                {{pet.deskripsi | strippedContent}}
                 </p>
-                <a :href="home + '/pet/' + n" class="btn btn-outline-secondary btn-sm" role="button">Selengkapnya</a>
+                <a :href="home + '/pet/' + pet.slug" class="btn btn-outline-secondary btn-sm" role="button">Selengkapnya</a>
               </div>
             </div>
           </div>
           <!-- /col -->
         </div>
         <!-- /row -->
+
+        <div class="row justify-content-md-center mt-3" v-else>
+          <div class="col-12">
+            <div class="card shadow-none text-center pt-5 pb-5 border-0" style="background-color:transparent;">
+              <div class="card-body text-black-50">
+                <i class="fal fa-box-open fa-4x"></i>
+                <p class="font-weight-bold mt-1">Data tidak tersedia.</p>
+              </div>
+            </div>
+          </div>
+        </div><!-- /row -->
       </section>
 
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <pagination :data="petsData" :limit="2" :align="'center'" @pagination-change-page="getResults"></pagination>
+
     </div>
     <!-- /container -->
 
@@ -90,7 +83,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">
-                Ini Anjing hilang
+                {{newsData.judul}}
               </h5>
               <button type="button" class="close" @click="show = !show">
                 <span aria-hidden="true">&times;</span>
@@ -98,29 +91,12 @@
             </div>
             <div class="modal-body">
               <img
-                src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1"
+                :src="storage + '/news/' + newsData.photo"
                 class="img-fluid w-100"
                 alt="img-animal"
               />
-              <h6 class="my-3">Deskripsi</h6>
-              <div class="deskripsi">
-                <p>
-                  Untuk para penggemar ikan hias pasti mengetahui jenis ikan
-                  guppy ini. Ikan yang mempunyai nama ilmiah poecilla reticulata
-                  ini biasa ditemukan pada habitat yang mempunyai arus air yang
-                  tenang, Ikan ini sebenarnya bukanlah ikan hias namun ikan yang
-                  digunakan untuk membasmi malaria atau jentik nyamuk.
-                </p>
-                <p>
-                  Namun ikan guppy yang hidup liar tersebut jauh berbeda dengan
-                  ikan guppy yang sengaja dibudidaya karena mempunyai corak
-                  warna yang sangat menawan yang membuat hewan air ini menjadi
-                  ikan hias guppy. Banyak sekali yang hampir tidak bisa
-                  membedakan antara ikan guppy ini dengan ikan cupang namun ikan
-                  guppy ini lebih mempunyai corak yang menawan dan lebih jinak
-                  untuk di taruh pada aquarium kamu. Ikan ini juga termasuk
-                  dalam ikan hias air tawar terindah.
-                </p>
+              <h6 class="my-3 font-weight-bold"><u>Deskripsi</u></h6>
+              <div class="deskripsi" v-html="newsData.deskripsi">
               </div>
             </div>
           </div>
@@ -133,13 +109,52 @@
 
 <script>
 export default {
-  props: ['home'],
+  props: ['home', 'storage'],
   data() {
     return {
-      show: false
+      show: false,
+      url: '/admin/pet/all-pet',
+      petsData: {},
+      newsData: {},
+      q: '',
+      jenis: 'all',
+      jenis_q: ''
     };
   },
+  methods:{
+    getResults(page = 1){
+      axios.get(`${this.url}?page=${page}&q=${this.q}&jenis=${this.jenis_q}`).then(res => {
+        this.petsData = res.data
+      })
+    },
+    getNews(){
+      axios.get('/admin/news/all-news').then(res => {
+        this.newsData = res.data.data[0]
+      })
+    }
+  },
+  watch: {
+    q(val){
+      this.getResults()
+    },
+    jenis(val){
+      if(val != 'all'){
+        this.jenis_q = this.jenis
+        this.getResults()
+      }else{
+        this.jenis_q = ''
+        this.getResults()
+      }
+    }
+  },
+  filters:{
+    strippedContent(string){
+      return string.replace(/<\/?[^>]+>/ig, " ")
+    }
+  },
   mounted() {
+    this.getResults()
+    this.getNews()
     setTimeout(() => {
       this.show = true;
     }, 500);

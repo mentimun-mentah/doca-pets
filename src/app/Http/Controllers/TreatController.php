@@ -43,7 +43,7 @@ class TreatController extends Controller
     public function getAllTreat(Request $request)
     {
         $query = Treat::query();
-        return $query->paginate(6);
+        return $query->orderBy('id', 'desc')->paginate(6);
     }
 
     public function update(Request $request)
