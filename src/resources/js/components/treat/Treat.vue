@@ -8,13 +8,13 @@
           <div class="row align-items-center">
             <div class="col-md-7 order-md-2">
               <div class="card-body">
-                <a :href="home + '/treat/' + n">
-                  <h2 class="featurette-heading">
+                <a :href="home + '/treat/' + n" class="text-decoration-none">
+                  <h2 class="featurette-heading truncate-2">
                     Oh yeah, it’s that good.
                     <span class="text-muted">See for yourself.</span>
                   </h2>
                 </a>
-                <p class="lead">
+                <p class="lead truncate-3">
                   Another featurette? Of course. More placeholder content here
                   to give you an idea of how this layout would work with some
                   actual real-world content in place.
@@ -38,13 +38,13 @@
           <div class="row align-items-center">
             <div class="col-md-7">
               <div class="card-body">
-                <a :href="home + '/treat/' + n">
-                  <h2 class="featurette-heading">
+                <a :href="home + '/treat/' + n" class="text-decoration-none">
+                  <h2 class="featurette-heading truncate-2">
                     First featurette heading.
                     <span class="text-muted">It’ll blow your mind.</span>
                   </h2>
                 </a>
-                <p class="lead">
+                <p class="lead truncate-3">
                   Some great placeholder content for the first featurette here.
                   Imagine some exciting prose here.
                 </p>

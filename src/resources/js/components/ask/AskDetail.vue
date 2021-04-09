@@ -57,14 +57,14 @@
             <!-- /user-topic-container -->
 
             <h5 class="h6 mb-2 text-secondary mt-3">Balas sebagai dokter</h5>
-            <form class="mb-5">
+            <div class="mb-5">
               <div class="form-group">
                 <wysiwyg v-model="myHTML" />
               </div>
               <button type="button" class="btn btn-outline-primary mb-3 btn-block">
                 <i class="fal fa-pencil-alt mr-1"></i> Kirim Balasan
               </button>
-            </form>
+            </div>
             
             <div class="card mt-3">
               <div class="card-body">

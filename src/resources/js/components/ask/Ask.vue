@@ -5,7 +5,7 @@
         <div class="col-lg-10">
           <section class="mt-3">
             <h2 class="h3 mb-3">Tanya Dokter</h2>
-            <form class="mb-5">
+            <div class="mb-5">
               <div class="form-group">
                 <label>Judul Topik</label>
                 <input
@@ -23,7 +23,7 @@
               >
                 <i class="fal fa-pencil-alt mr-1"></i> Kirim Pertanyaan
               </button>
-            </form>
+            </div>
 
             <h2 class="h3 mb-3">Diskusi Terbaru</h2>
             <div class="related-topic-card" v-for="n in 5" :key="n">

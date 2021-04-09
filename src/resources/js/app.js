@@ -36,6 +36,12 @@ Vue.component('list-doctor', require('./components/admin/ListDoctor.vue').defaul
 Vue.component('add-pet', require('./components/admin/pet/AddPet.vue').default);
 Vue.component('all-pet', require('./components/admin/pet/AllPet.vue').default);
 Vue.component('change-pet', require('./components/admin/pet/ChangePet.vue').default);
+Vue.component('all-news', require('./components/admin/news/AllNews.vue').default);
+Vue.component('add-news', require('./components/admin/news/AddNews.vue').default);
+Vue.component('change-news', require('./components/admin/news/ChangeNews.vue').default);
+Vue.component('add-treat', require('./components/admin/treat/AddTreat.vue').default);
+Vue.component('all-treat', require('./components/admin/treat/AllTreat.vue').default);
+Vue.component('change-treat', require('./components/admin/treat/ChangeTreat.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

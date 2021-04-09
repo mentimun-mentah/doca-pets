@@ -6,29 +6,27 @@
           Jenis Anjing & Kucing
         </h1>
 
-        <form>
-          <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-8">
-              <div class="form-group has-search">
-                <span class="fa fa-search form-control-feedback"></span>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Cari hewan"
-                />
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-4">
-              <div class="form-group">
-                <select id="inputState" class="form-control">
-                  <option>All</option>
-                  <option>Anjing</option>
-                  <option>Kucing</option>
-                </select>
-              </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-6 col-lg-8">
+            <div class="form-group has-search">
+              <span class="fa fa-search form-control-feedback"></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Cari hewan"
+              />
             </div>
           </div>
-        </form>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="form-group">
+              <select id="inputState" class="form-control">
+                <option>All</option>
+                <option>Anjing</option>
+                <option>Kucing</option>
+              </select>
+            </div>
+          </div>
+        </div><!--/row-->
 
         <div class="row">
           <div class="col col-lg-4 col-md-6 col-sm-12" v-for="n in 6" :key="n">
@@ -41,9 +39,10 @@
                 />
               </div>
               <div class="card-body">
-                <h5 class="card-title">Ini Anjing</h5>
-                <p class="card-text">
+                <h5 class="card-title truncate-2">Ini Anjing</h5>
+                <p class="card-text truncate-3">
                   Some quick example text to build on the card title the bulk of
+                  the card's content. Some quick example text to build on the card title the bulk of
                   the card's content.
                 </p>
                 <a :href="home + '/pet/' + n" class="btn btn-outline-secondary btn-sm" role="button">Selengkapnya</a>
@@ -166,5 +165,12 @@ export default {
   text-align: center;
   pointer-events: none;
   color: #aaa;
+}
+.truncate-2 {
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 </style>

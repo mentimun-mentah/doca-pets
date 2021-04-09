@@ -36,7 +36,7 @@
     <!-- Page content -->
     <div class="container-fluid mt--6">
       <div class="header-body">
-        <div class="row">
+        <div class="row" v-if="doctorData.data && doctorData.data.length > 0">
 
           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 m-b-20" v-for="doctor in doctorData.data" :key="doctor.id">
             <div class="card">
@@ -74,8 +74,8 @@
                     </p>
                   </div><!-- /col -->
                 </div><!-- /row -->
-                <p v-if="doctor.status == 'accept'">Diterima</p>
-                <p v-if="doctor.status == 'reject'">Ditolak</p>
+                <span class="badge badge-success mt-3 py-2" role="alert" v-if="doctor.status == 'accept'">Diterima</span>
+                <span class="badge badge-danger mt-3 py-2" role="alert" v-if="doctor.status == 'reject'">Ditolak</span>
                 <center class="mt-3" v-if="doctor.status == 'waiting'">
                   <button class="btn btn-success btn-sm m-r-0" @click="acceptDoctor(doctor.id)">Terima</button>
                   <button class="btn btn-danger btn-sm" @click="rejectDoctor(doctor.id)">Tolak</button>

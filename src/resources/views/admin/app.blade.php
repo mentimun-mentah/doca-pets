@@ -89,33 +89,33 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples">
+              <a class="nav-link {{str_contains(Route::currentRouteName(),'news') ? 'active' : ''}}" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="{{str_contains(Route::currentRouteName(),'news') ? 'true' : 'false'}}" aria-controls="navbar-examples">
                 <i class="far fa-newspaper"></i>
                 <span class="nav-link-text">Berita</span>
               </a>
-              <div class="collapse" id="navbar-examples">
+              <div class="collapse {{str_contains(Route::currentRouteName(),'news') ? 'show' : ''}}" id="navbar-examples">
                 <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">Tambah Berita</a>
+                  <li class="nav-item {{Route::currentRouteName() == 'admin.addnews' ? 'active': ''}}">
+                    <a href="{{url('/admin/add-news')}}" class="nav-link">Tambah Berita</a>
                   </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">Kelola Berita</a>
+                  <li class="nav-item {{Route::currentRouteName() == 'admin.allnews' ? 'active': ''}}">
+                    <a href="{{url('/admin/all-news')}}" class="nav-link">Kelola Berita</a>
                   </li>
                 </ul>
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#navbar-hewan" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-hewan">
+              <a class="nav-link {{str_contains(Route::currentRouteName(),'treat') ? 'active' : ''}}" href="#navbar-hewan" data-toggle="collapse" role="button" aria-expanded="{{str_contains(Route::currentRouteName(),'treat') ? 'true' : 'false'}}" aria-controls="navbar-hewan">
                 <i class="far fa-heartbeat"></i>
                 <span class="nav-link-text">Merawat</span>
               </a>
-              <div class="collapse" id="navbar-hewan">
+              <div class="collapse {{str_contains(Route::currentRouteName(),'treat') ? 'show' : ''}}" id="navbar-hewan">
                 <ul class="nav nav-sm flex-column">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">Tambah Cara Merawat</a>
+                  <li class="nav-item {{Route::currentRouteName() == 'admin.addtreat' ? 'active': ''}}">
+                    <a href="{{url('/admin/add-treat')}}" class="nav-link">Tambah Cara Merawat</a>
                   </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">Kelola Cara Merawat</a>
+                  <li class="nav-item {{Route::currentRouteName() == 'admin.alltreat' ? 'active': ''}}">
+                    <a href="{{url('/admin/all-treat')}}" class="nav-link">Kelola Cara Merawat</a>
                   </li>
                 </ul>
               </div>

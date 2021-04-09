@@ -273,8 +273,7 @@
               <div class="col-md-4 col-lg-4 footer-about wow fadeInUp">
                 <h1 class="footer-logo-text">Doca.pets</h1>
                 <p>
-                  We are a young company always looking for new and creative
-                  ideas to help you with our products in your everyday work.
+                Doca.pets merupakan aplikasi website untuk memberikan solusi dan dapat membagikan informasi tentang kehilangan hewan peliharaan.
                 </p>
                 <p class="mb-0">
                   Copyright © {{date("Y")}} All Rights Reserved by Doca.pets.
@@ -285,22 +284,21 @@
               >
                 <h3>Contact us</h3>
                 <p>
-                  <i class="fas fa-map-marker-alt"></i> Via Rossini 10, 10136
-                  Turin Italy
+                  <i class="fas fa-map-marker-alt"></i> Jimbaran, Ungasan, Kuta Selatan
                 </p>
-                <p><i class="fas fa-phone"></i> Phone: (0039) 333 12 68 347</p>
+                <p><i class="fas fa-phone"></i> Phone: 0821 3332 1268</p>
                 <p>
                   <i class="fas fa-envelope"></i> Email:
-                  <a href="mailto:hello@domain.com">hello@domain.com</a>
+                  <a href="mailto:doca-support@gmail.com">doca-support@gmail.com</a>
                 </p>
               </div>
               <div class="col-md-4 col-lg-3 footer-social wow fadeInUp">
                 <h3>Follow us</h3>
                 <p>
-                  <a href="#"><i class="fab fa-facebook"></i></a>
-                  <a href="#"><i class="fab fa-twitter"></i></a>
-                  <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                  <a href="#"><i class="fab fa-instagram"></i></a>
+                  <a target="__blank" href="https://www.facebook.com"><i class="fab fa-facebook"></i></a>
+                  <a target="__blank" href="https://www.twitter.com"><i class="fab fa-twitter"></i></a>
+                  <a target="__blank" href="https://www.google.com"><i class="fab fa-google-plus-g"></i></a>
+                  <a target="__blank" href="https://www.instagram.com"><i class="fab fa-instagram"></i></a>
                 </p>
               </div>
             </div>

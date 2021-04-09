@@ -58,7 +58,7 @@
                 <img class="card-img-top embed-responsive-item obj-fit-cover" :src="storage + '/' + pet.photo" alt="Card image cap">
               </div>
               <div class="card-body">
-                <a href="#"><h4 class="card-title mt--3">{{ pet.nama }}</h4></a>
+                <a href="#"><h4 class="card-title mt--3 truncate-2">{{ pet.nama }}</h4></a>
                 <p class="card-text mt--3 truncate-3" style="font-size: 12px;">
                 {{pet.deskripsi | strippedContent}}
                 </p>

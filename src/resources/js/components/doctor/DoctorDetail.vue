@@ -32,7 +32,7 @@
 
             <div class="detail-dokter">
               <h6 class="h5 mb-2 font-weight-bold">Lokasi - Siloam Hospitals Kebon Jeruk</h6>
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126169.14395405019!2d115.16483146018062!3d-8.806188672573722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x6d03980a46a64ea1!2sSiloam%20Hospitals%20Denpasar!5e0!3m2!1sen!2sid!4v1617811501570!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1704.5680577496535!2d115.18816135880937!3d-8.641001521903005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23fff77872345%3A0x4613532438b18a2b!2sTyo%20house!5e0!3m2!1sen!2sid!4v1617969409016!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             </div><!-- /detail-dokter -->
 
             <div class="detail-dokter">
