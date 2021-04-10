@@ -13,18 +13,19 @@ services:
       - mysql
 
   mysql:
-    image: mysql:5.7.29
+    image: mysql:5.7.21
     restart: unless-stopped
     tty: true
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: doca_pets
-      MYSQL_USER: doca_pets
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      - MYSQL_DATABASE=doca_pets
+      - MYSQL_USER=doca_pets
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+      - SERVICE_TAGS=dev
+      - SERVICE_NAME=mysql
+      - TZ=Asia/Kuala_Lumpur
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

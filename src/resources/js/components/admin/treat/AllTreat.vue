@@ -117,7 +117,8 @@ export default {
   },
   filters: {
     strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/gi, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted() {

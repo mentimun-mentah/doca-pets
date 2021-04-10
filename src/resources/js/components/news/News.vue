@@ -3,7 +3,7 @@
     <div class="container">
       <section class="mt-3">
         <h2 class="text-center h3 mb-3">Berita Kehilangan</h2>
-        <div class="row">
+        <div class="row" v-if="newsData.data && newsData.data.length > 0">
 
           <div class="col col-lg-6 col-md-6 col-sm-12" v-for="news in newsData.data" :key="news.id">
             <div class="card card-animal mb-3">
@@ -73,7 +73,18 @@
           </div>
           <!-- /col -->
 
-        </div>
+        </div><!--/row-->
+
+        <div class="row justify-content-md-center mt-3" v-else>
+          <div class="col-12">
+            <div class="card shadow-none text-center pt-5 pb-5 border-0" style="background-color:transparent;">
+              <div class="card-body text-black-50">
+                <i class="fal fa-box-open fa-4x"></i>
+                <p class="font-weight-bold mt-1">Data tidak tersedia.</p>
+              </div>
+            </div>
+          </div>
+        </div><!-- /row -->
       </section>
 
       <pagination :data="newsData" :limit="2" :align="'center'" @pagination-change-page="getResults"></pagination>
@@ -102,7 +113,8 @@ export default {
   },
   filters:{
     strippedContent(string){
-      return string.replace(/<\/?[^>]+>/ig, " ")
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted(){ 

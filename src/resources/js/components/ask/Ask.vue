@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Toasts></Toasts>
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -12,102 +13,152 @@
                   type="text"
                   class="form-control"
                   placeholder="Contoh: Dari umur berapa bayi boleh diberi makanan padat?"
+                  v-model="create_data.judul"
+                  :class="[errors.judul ? 'is-invalid' : '']"
                 />
+                <small class="text-danger" v-if="errors.judul">
+                  {{ errors.judul[0] }}
+                </small>
               </div>
               <div class="form-group">
-                <wysiwyg v-model="myHTML" />
+                <wysiwyg v-model="create_data.subject" />
+                <small class="text-danger" v-if="errors.subject">
+                  {{ errors.subject[0] }}
+                </small>
               </div>
               <button
                 type="button"
                 class="btn btn-outline-primary mb-3 btn-block"
+                @click="createComment"
               >
                 <i class="fal fa-pencil-alt mr-1"></i> Kirim Pertanyaan
               </button>
             </div>
 
             <h2 class="h3 mb-3">Diskusi Terbaru</h2>
-            <div class="related-topic-card" v-for="n in 5" :key="n">
-              <a
-                :href="home + '/ask/' + n"
-                class="text-reset text-decoration-none"
-              >
-                <div class="topic-info">
-                  <div class="total-reply">
-                    <span class="text-primary">0 Balasan</span>
-                    <i class="fas fa-comment ml-2 text-primary"></i>
-                  </div>
+            <div v-if="commentData.data && commentData.data.length > 0">
+              <div class="related-topic-card" v-for="comment in commentData.data" :key="comment.id">
+                <a
+                  :href="home + '/ask/' + comment.id"
+                  class="text-reset text-decoration-none"
+                >
+                  <div class="topic-info">
+                    <div class="total-reply">
+                      <span class="text-primary">{{comment.replies_count}} Balasan</span>
+                      <i class="fas fa-comment ml-2 text-primary"></i>
+                    </div>
 
-                  <div class="reply-time">
-                    <span class="text-secondary">1 menit yang lalu</span>
-                    <i class="fas fa-clock ml-2 text-primary"></i>
-                  </div>
-                </div>
-
-                <div class="topic-container">
-                  <img
-                    class="mr-1 img rounded-circle"
-                    src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1"
-                    alt="Generic placeholder image"
-                  />
-                  <div class="topic-title">
-                    <span
-                      class="card-title font-weight-bold text-decoration-none text-dark"
-                    >
-                      Shaving Kulit
-                    </span>
-                    <div class="topic-by text-secondary">
-                      Oleh: David
+                    <div class="reply-time">
+                      <span class="text-secondary">{{momentJs(comment.created_at)}}</span>
+                      <i class="fas fa-clock ml-2 text-primary"></i>
                     </div>
                   </div>
+
+                  <div class="topic-container">
+                    <img
+                      class="mr-1 img rounded-circle"
+                      :src="storage + '/avatar/' + comment.user.avatar"
+                      alt="Generic placeholder image"
+                    />
+                    <div class="topic-title">
+                      <span
+                        class="card-title font-weight-bold text-decoration-none text-dark truncate-2"
+                      >
+                      {{comment.judul}}
+                      </span>
+                      <div class="topic-by text-secondary text-capitalize">
+                        Oleh: {{comment.user.name}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic-detail">
+                    <p class="mb-0 truncate-2">
+                      {{comment.subject | strippedContent}}
+                    </p>
+                  </div>
+                  <!-- /topic-detail -->
+                </a>
+              </div>
+              <!-- /related-topic-card -->
+            </div><!--/v-if-->
+
+            <div class="row justify-content-md-center mt-3" v-else>
+              <div class="col-12">
+                <div class="card shadow-none text-center pt-5 pb-5 border-0" style="background-color:transparent;">
+                  <div class="card-body text-black-50">
+                    <i class="fal fa-box-open fa-4x"></i>
+                    <p class="font-weight-bold mt-1">Data tidak tersedia.</p>
+                  </div>
                 </div>
-                <div class="topic-detail">
-                  <p class="mb-0">
-                    Dok, saya liat di online ada yang jual cream perontok bulu
-                    (khusus kelamin) apakah aman untuk dipakai laki-laki dok?
-                    Soalnya laki-laki mempunyai...
-                  </p>
-                </div>
-                <!-- /topic-detail -->
-              </a>
-            </div>
-            <!-- /related-topic-card -->
+              </div>
+            </div><!-- /row -->
+
           </section>
         </div>
         <!-- /col-lg-8 -->
       </div>
       <!-- /row -->
 
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <div class="mt-5">
+        <pagination
+          :data="commentData"
+          :limit="2"
+          :align="'center'"
+          @pagination-change-page="getResults"
+        ></pagination>
+      </div><!--/row-->
     </div>
     <!-- /container -->
   </div>
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
-  props: ["home"],
+  props: ["home", "storage"],
   data() {
     return {
-      myHTML: ""
+      url: "/comment/all-comment",
+      commentData: {},
+      create_data: {
+        judul: "",
+        subject: ""
+      },
+      errors: []
     };
+  },
+  methods:{
+    getResults(page = 1) {
+      axios.get(`${this.url}?page=${page}`).then(res => {
+        this.commentData = res.data;
+      });
+    },
+    createComment(){
+      axios.post('/comment/create',this.create_data).then(res => {
+          this.getResults()
+          this.$toast.success(res.data.status);
+          this.errors = [];
+          this.create_data.judul = ""
+          this.create_data.subject = ""
+      }).catch(err => {
+        if(err.response.status !== 422) this.$toast.warning(err.response.data.status);
+        else this.errors = err.response.data.errors
+      })
+    },
+    momentJs(val) {
+      moment.locale('id');
+      return moment(val).startOf('minute').fromNow();
+    }
+  },
+  filters: {
+    strippedContent(string) {
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
+    }
+  },
+  mounted() {
+    this.getResults();
   }
 };
 </script>

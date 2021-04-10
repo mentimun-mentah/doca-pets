@@ -3,7 +3,7 @@
     <div class="container">
       <section class="mt-3">
         <h2 class="text-center h3 mb-3">Daftar Dokter</h2>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="1 == 1">
           <div class="col-lg-10" v-for="n in 6" :key="n">
             <div class="card mb-3">
               <div class="row no-gutters">
@@ -58,7 +58,18 @@
             </div>
           </div>
           <!-- /col -->
-        </div>
+        </div><!--/row-->
+
+        <div class="row justify-content-md-center mt-3" v-else>
+          <div class="col-12">
+            <div class="card shadow-none text-center pt-5 pb-5 border-0" style="background-color:transparent;">
+              <div class="card-body text-black-50">
+                <i class="fal fa-box-open fa-4x"></i>
+                <p class="font-weight-bold mt-1">Data tidak tersedia.</p>
+              </div>
+            </div>
+          </div>
+        </div><!-- /row -->
       </section>
 
       <nav aria-label="Page navigation example">

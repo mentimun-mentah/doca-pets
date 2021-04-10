@@ -129,7 +129,8 @@ export default {
   },
   filters:{
     strippedContent(string){
-      return string.replace(/<\/?[^>]+>/ig, " ")
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted() {

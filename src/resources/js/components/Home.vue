@@ -71,12 +71,12 @@
 
     <!-- Modal -->
 
-    <div class="modal-backdrop fade show" v-if="show"></div>
+    <div class="modal-backdrop fade show" v-if="newsData && show"></div>
     <transition
       enter-active-class="animate__animated animate__fadeInDown animate__faster"
       leave-active-class="animate__animated animate__fadeOut animate__faster"
     >
-      <div v-if="show" class="modal fade show d-block">
+      <div v-if="newsData && show" class="modal fade show d-block">
         <div
           class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
         >
@@ -149,7 +149,8 @@ export default {
   },
   filters:{
     strippedContent(string){
-      return string.replace(/<\/?[^>]+>/ig, " ")
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted() {
@@ -187,5 +188,8 @@ export default {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
+}
+.deskripsi img {
+  width: 100%;
 }
 </style>

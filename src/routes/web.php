@@ -45,6 +45,21 @@ Route::get('/doctor/{id}', [App\Http\Controllers\DoctorController::class, 'show'
 Route::get('/ask', [App\Http\Controllers\AskController::class, 'index'])->name('ask');
 Route::get('/ask/{id}', [App\Http\Controllers\AskController::class, 'show'])->name('ask');
 
+/* COMMENT FUNCTION */
+Route::get('/comment/all-comment', [App\Http\Controllers\CommentController::class, 'getAllComment']);
+/* REPLIES FUNCTION */
+Route::get('/replies/all-replies/{id}', [App\Http\Controllers\RepliesController::class, 'getAllReplies']);
+
+Route::middleware(['user.basic'])->group(function () {
+  /* COMMENT FUNCTION */
+  Route::post('/comment/create', [App\Http\Controllers\CommentController::class, 'create']);
+});
+
+Route::middleware(['doctor'])->group(function () {
+  /* REPLIES FUNCTION */
+  Route::post('/replies/create/{id}', [App\Http\Controllers\RepliesController::class, 'create']);
+});
+
 /* PET FUNCTION */
 Route::get('/admin/pet/all-pet', [App\Http\Controllers\PetsController::class, 'getAllPet'])->name('pet.public');
 /* DOCTOR FUNCTION */

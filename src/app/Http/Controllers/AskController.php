@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class AskController extends Controller
@@ -13,7 +14,8 @@ class AskController extends Controller
 
     public function show($id)
     {
-        return view('ask.show');
+        $comment = Comment::with('user')->findOrFail($id);
+        return view('ask.show', ['comment' => $comment]);
     }
 
 }

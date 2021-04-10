@@ -2501,7 +2501,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     strippedContent: function strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/ig, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted: function mounted() {
@@ -3521,7 +3522,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     strippedContent: function strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/ig, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted: function mounted() {
@@ -4069,7 +4071,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     strippedContent: function strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/ig, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted: function mounted() {
@@ -4605,7 +4608,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     strippedContent: function strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/gi, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted: function mounted() {
@@ -4810,6 +4814,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -4913,12 +4919,68 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["home"],
+  props: ["home", "storage"],
   data: function data() {
     return {
-      myHTML: ""
+      url: "/comment/all-comment",
+      commentData: {},
+      create_data: {
+        judul: "",
+        subject: ""
+      },
+      errors: []
     };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get("".concat(this.url, "?page=").concat(page)).then(function (res) {
+        _this.commentData = res.data;
+      });
+    },
+    createComment: function createComment() {
+      var _this2 = this;
+
+      axios.post('/comment/create', this.create_data).then(function (res) {
+        _this2.getResults();
+
+        _this2.$toast.success(res.data.status);
+
+        _this2.errors = [];
+        _this2.create_data.judul = "";
+        _this2.create_data.subject = "";
+      })["catch"](function (err) {
+        if (err.response.status !== 422) _this2.$toast.warning(err.response.data.status);else _this2.errors = err.response.data.errors;
+      });
+    },
+    momentJs: function momentJs(val) {
+      moment__WEBPACK_IMPORTED_MODULE_0___default().locale('id');
+      return moment__WEBPACK_IMPORTED_MODULE_0___default()(val).startOf('minute').fromNow();
+    }
+  },
+  filters: {
+    strippedContent: function strippedContent(string) {
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
+    }
+  },
+  mounted: function mounted() {
+    this.getResults();
   }
 });
 
@@ -4935,6 +4997,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -5089,11 +5153,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ["home", "comment", "storage", "current_user"],
   data: function data() {
     return {
-      myHTML: ""
+      url: "/replies/all-replies",
+      repliesData: {},
+      create_data: {
+        balasan: ""
+      },
+      errors: []
     };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get("".concat(this.url, "/").concat(this.comment.id, "?page=").concat(page)).then(function (res) {
+        _this.repliesData = res.data;
+      });
+    },
+    createReplies: function createReplies() {
+      var _this2 = this;
+
+      axios.post("/replies/create/".concat(this.comment.id), this.create_data).then(function (res) {
+        _this2.getResults();
+
+        _this2.$toast.success(res.data.status);
+
+        _this2.errors = [];
+        _this2.create_data.balasan = "";
+      })["catch"](function (err) {
+        if (err.response.status !== 422) _this2.$toast.warning(err.response.data.status);else _this2.errors = err.response.data.errors;
+      });
+    },
+    momentJsAtas: function momentJsAtas(val) {
+      return moment__WEBPACK_IMPORTED_MODULE_0___default()(val).format("DD MMMM YYYY");
+    },
+    momentJsBawah: function momentJsBawah(val) {
+      return moment__WEBPACK_IMPORTED_MODULE_0___default()(val).format("LT");
+    }
+  },
+  mounted: function mounted() {
+    this.getResults();
   }
 });
 
@@ -5110,6 +5220,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5591,6 +5712,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["home", "storage"],
   data: function data() {
@@ -5611,7 +5743,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     strippedContent: function strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/ig, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted: function mounted() {
@@ -5712,6 +5845,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["home", "storage"],
   data: function data() {
@@ -5732,7 +5878,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   filters: {
     strippedContent: function strippedContent(string) {
-      return string.replace(/<\/?[^>]+>/gi, " ");
+      string = string.replace(/<\/?[^>]+>/gi, " ");
+      return string.replace(/&nbsp;/g, " ");
     }
   },
   mounted: function mounted() {
@@ -10436,7 +10583,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.card-shadow-hover:hover {\n  box-shadow: 0px 6px 16px rgb(0 0 0 / 12%);\n  transition: all 0.2s ease;\n}\n.has-search .form-control {\n  padding-left: 2.375rem;\n}\n.has-search .form-control-feedback {\n  position: absolute;\n  z-index: 2;\n  display: block;\n  width: 2.375rem;\n  height: 2.375rem;\n  line-height: 2.375rem;\n  text-align: center;\n  pointer-events: none;\n  color: #aaa;\n}\n.truncate-2 {\n  -webkit-line-clamp: 2;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.card-shadow-hover:hover {\n  box-shadow: 0px 6px 16px rgb(0 0 0 / 12%);\n  transition: all 0.2s ease;\n}\n.has-search .form-control {\n  padding-left: 2.375rem;\n}\n.has-search .form-control-feedback {\n  position: absolute;\n  z-index: 2;\n  display: block;\n  width: 2.375rem;\n  height: 2.375rem;\n  line-height: 2.375rem;\n  text-align: center;\n  pointer-events: none;\n  color: #aaa;\n}\n.truncate-2 {\n  -webkit-line-clamp: 2;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n}\n.deskripsi img {\n  width: 100%;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10604,7 +10751,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.editr {\n  border: 1px solid #e4e4e4;\n  width: 100%;\n}\n.editr--toolbar {\n  background: #f6f6f6;\n  border-bottom: 1px solid #e4e4e4;\n  position: relative;\n  display: flex;\n  height: 32px;\n}\n.editr--toolbar a {\n  display: inline-block;\n  width: 8vw;\n  max-width: 32px;\n  height: 32px;\n  color: #333;\n  fill: #333;\n  cursor: pointer;\n  text-align: center;\n  line-height: 1;\n}\n.editr--toolbar a:hover {\n  background: rgba(0,0,0,0.1);\n}\n.editr--toolbar a:active {\n  background: rgba(0,0,0,0.2);\n}\n.editr--toolbar a svg {\n  width: 16px;\n  height: 16px;\n  margin: 8px auto;\n}\n.editr--toolbar a svg path {\n  fill: inherit;\n}\n.editr--toolbar a.vw-btn-separator {\n  width: 1px;\n  margin: 0 8px;\n}\n.editr--toolbar a.vw-btn-separator:hover {\n  background: initial;\n  cursor: default;\n}\n.editr--toolbar a.vw-btn-separator i.vw-separator {\n  border-left: 1px solid rgba(0,0,0,0.1);\n  height: 100%;\n  position: absolute;\n  width: 1px;\n}\n.editr--toolbar .dashboard {\n  width: 100%;\n  position: absolute;\n  top: 32px;\n  left: 0;\n  text-align: left;\n  padding: 8px 16px;\n  background: rgba(255,255,255,0.95);\n  border: 1px solid #f6f6f6;\n}\n.editr--content {\n  min-height: 150px;\n  padding: 12px 8px 16px 8px;\n  line-height: 1.33;\n  font-family: inherit;\n  color: inherit;\n  overflow-y: auto;\n}\n.editr--content[contenteditable=true]:empty:before {\n  content: attr(placeholder);\n  color: rgba(0,0,0,0.3);\n  display: block; /* For Firefox */\n}\n.editr--content img {\n  max-width: 100%;\n}\n.editr--content table {\n  width: 100%;\n  border-collapse: collapse;\n}\n.editr--content table th {\n  text-align: left;\n}\n.editr--content table th,\n.editr--content table td {\n  border: 1px solid #ddd;\n  padding: 2px;\n}\n.editr--content:focus {\n  outline: 0;\n}\n.editr--content ul li,\n.editr--content ol li {\n  list-style-position: inside;\n}\n@media screen and (max-width: 320px) {\n.editr--toolbar a {\n    margin: 0 2px;\n}\n.editr--toolbar a.vw-btn-separator {\n    display: none;\n}\n}\n.form[data-v-ebce4d12] {\n  display: flex;\n  align-content: flex-end;\n}\n.form label[data-v-ebce4d12] {\n  margin-right: 1rem;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.editr {\n  border: 1px solid #e4e4e4;\n  width: 100%;\n}\n.editr--toolbar {\n  background: #f6f6f6;\n  border-bottom: 1px solid #e4e4e4;\n  position: relative;\n  display: flex;\n  height: 32px;\n}\n.editr--toolbar a {\n  display: inline-block;\n  width: 8vw;\n  max-width: 32px;\n  height: 32px;\n  color: #333;\n  fill: #333;\n  cursor: pointer;\n  text-align: center;\n  line-height: 1;\n}\n.editr--toolbar a:hover {\n  background: rgba(0, 0, 0, 0.1);\n}\n.editr--toolbar a:active {\n  background: rgba(0, 0, 0, 0.2);\n}\n.editr--toolbar a svg {\n  width: 16px;\n  height: 16px;\n  margin: 8px auto;\n}\n.editr--toolbar a svg path {\n  fill: inherit;\n}\n.editr--toolbar a.vw-btn-separator {\n  width: 1px;\n  margin: 0 8px;\n}\n.editr--toolbar a.vw-btn-separator:hover {\n  background: initial;\n  cursor: default;\n}\n.editr--toolbar a.vw-btn-separator i.vw-separator {\n  border-left: 1px solid rgba(0, 0, 0, 0.1);\n  height: 100%;\n  position: absolute;\n  width: 1px;\n}\n.editr--toolbar .dashboard {\n  width: 100%;\n  position: absolute;\n  top: 32px;\n  left: 0;\n  text-align: left;\n  padding: 8px 16px;\n  background: rgba(255, 255, 255, 0.95);\n  border: 1px solid #f6f6f6;\n}\n.editr--content {\n  min-height: 150px;\n  padding: 12px 8px 16px 8px;\n  line-height: 1.33;\n  font-family: inherit;\n  color: inherit;\n  overflow-y: auto;\n}\n.editr--content[contenteditable=\"true\"]:empty:before {\n  content: attr(placeholder);\n  color: rgba(0, 0, 0, 0.3);\n  display: block; /* For Firefox */\n}\n.editr--content img {\n  max-width: 100%;\n}\n.editr--content table {\n  width: 100%;\n  border-collapse: collapse;\n}\n.editr--content table th {\n  text-align: left;\n}\n.editr--content table th,\n.editr--content table td {\n  border: 1px solid #ddd;\n  padding: 2px;\n}\n.editr--content:focus {\n  outline: 0;\n}\n.editr--content ul li,\n.editr--content ol li {\n  list-style-position: inside;\n}\n@media screen and (max-width: 320px) {\n.editr--toolbar a {\n    margin: 0 2px;\n}\n.editr--toolbar a.vw-btn-separator {\n    display: none;\n}\n}\n.form[data-v-ebce4d12] {\n  display: flex;\n  align-content: flex-end;\n}\n.form label[data-v-ebce4d12] {\n  margin-right: 1rem;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -73337,7 +73484,7 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _vm.show
+      _vm.newsData && _vm.show
         ? _c("div", { staticClass: "modal-backdrop fade show" })
         : _vm._e(),
       _vm._v(" "),
@@ -73352,7 +73499,7 @@ var render = function() {
           }
         },
         [
-          _vm.show
+          _vm.newsData && _vm.show
             ? _c("div", { staticClass: "modal fade show d-block" }, [
                 _c(
                   "div",
@@ -77078,18 +77225,58 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-lg-10" }, [
-          _c(
-            "section",
-            { staticClass: "mt-3" },
-            [
+  return _c(
+    "div",
+    [
+      _c("Toasts"),
+      _vm._v(" "),
+      _c("div", { staticClass: "container" }, [
+        _c("div", { staticClass: "row justify-content-center" }, [
+          _c("div", { staticClass: "col-lg-10" }, [
+            _c("section", { staticClass: "mt-3" }, [
               _c("h2", { staticClass: "h3 mb-3" }, [_vm._v("Tanya Dokter")]),
               _vm._v(" "),
               _c("div", { staticClass: "mb-5" }, [
-                _vm._m(0),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", [_vm._v("Judul Topik")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.create_data.judul,
+                        expression: "create_data.judul"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: [_vm.errors.judul ? "is-invalid" : ""],
+                    attrs: {
+                      type: "text",
+                      placeholder:
+                        "Contoh: Dari umur berapa bayi boleh diberi makanan padat?"
+                    },
+                    domProps: { value: _vm.create_data.judul },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.create_data, "judul", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.judul
+                    ? _c("small", { staticClass: "text-danger" }, [
+                        _vm._v(
+                          "\n                " +
+                            _vm._s(_vm.errors.judul[0]) +
+                            "\n              "
+                        )
+                      ])
+                    : _vm._e()
+                ]),
                 _vm._v(" "),
                 _c(
                   "div",
@@ -77097,204 +77284,202 @@ var render = function() {
                   [
                     _c("wysiwyg", {
                       model: {
-                        value: _vm.myHTML,
+                        value: _vm.create_data.subject,
                         callback: function($$v) {
-                          _vm.myHTML = $$v
+                          _vm.$set(_vm.create_data, "subject", $$v)
                         },
-                        expression: "myHTML"
+                        expression: "create_data.subject"
                       }
-                    })
+                    }),
+                    _vm._v(" "),
+                    _vm.errors.subject
+                      ? _c("small", { staticClass: "text-danger" }, [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(_vm.errors.subject[0]) +
+                              "\n              "
+                          )
+                        ])
+                      : _vm._e()
                   ],
                   1
                 ),
                 _vm._v(" "),
-                _vm._m(1)
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-primary mb-3 btn-block",
+                    attrs: { type: "button" },
+                    on: { click: _vm.createComment }
+                  },
+                  [
+                    _c("i", { staticClass: "fal fa-pencil-alt mr-1" }),
+                    _vm._v(" Kirim Pertanyaan\n            ")
+                  ]
+                )
               ]),
               _vm._v(" "),
               _c("h2", { staticClass: "h3 mb-3" }, [_vm._v("Diskusi Terbaru")]),
               _vm._v(" "),
-              _vm._l(5, function(n) {
-                return _c(
-                  "div",
-                  { key: n, staticClass: "related-topic-card" },
-                  [
-                    _c(
-                      "a",
-                      {
-                        staticClass: "text-reset text-decoration-none",
-                        attrs: { href: _vm.home + "/ask/" + n }
-                      },
-                      [
-                        _vm._m(2, true),
-                        _vm._v(" "),
-                        _vm._m(3, true),
-                        _vm._v(" "),
-                        _vm._m(4, true)
-                      ]
-                    )
-                  ]
-                )
-              })
-            ],
-            2
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _vm._m(5)
-    ])
-  ])
+              _vm.commentData.data && _vm.commentData.data.length > 0
+                ? _c(
+                    "div",
+                    _vm._l(_vm.commentData.data, function(comment) {
+                      return _c(
+                        "div",
+                        { key: comment.id, staticClass: "related-topic-card" },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "text-reset text-decoration-none",
+                              attrs: { href: _vm.home + "/ask/" + comment.id }
+                            },
+                            [
+                              _c("div", { staticClass: "topic-info" }, [
+                                _c("div", { staticClass: "total-reply" }, [
+                                  _c("span", { staticClass: "text-primary" }, [
+                                    _vm._v(
+                                      _vm._s(comment.replies_count) + " Balasan"
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("i", {
+                                    staticClass:
+                                      "fas fa-comment ml-2 text-primary"
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "reply-time" }, [
+                                  _c(
+                                    "span",
+                                    { staticClass: "text-secondary" },
+                                    [
+                                      _vm._v(
+                                        _vm._s(_vm.momentJs(comment.created_at))
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("i", {
+                                    staticClass:
+                                      "fas fa-clock ml-2 text-primary"
+                                  })
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "topic-container" }, [
+                                _c("img", {
+                                  staticClass: "mr-1 img rounded-circle",
+                                  attrs: {
+                                    src:
+                                      _vm.storage +
+                                      "/avatar/" +
+                                      comment.user.avatar,
+                                    alt: "Generic placeholder image"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "topic-title" }, [
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "card-title font-weight-bold text-decoration-none text-dark truncate-2"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                    " +
+                                          _vm._s(comment.judul) +
+                                          "\n                    "
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "topic-by text-secondary text-capitalize"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                      Oleh: " +
+                                          _vm._s(comment.user.name) +
+                                          "\n                    "
+                                      )
+                                    ]
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "topic-detail" }, [
+                                _c("p", { staticClass: "mb-0 truncate-2" }, [
+                                  _vm._v(
+                                    "\n                    " +
+                                      _vm._s(
+                                        _vm._f("strippedContent")(
+                                          comment.subject
+                                        )
+                                      ) +
+                                      "\n                  "
+                                  )
+                                ])
+                              ])
+                            ]
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                : _c(
+                    "div",
+                    { staticClass: "row justify-content-md-center mt-3" },
+                    [_vm._m(0)]
+                  )
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "mt-5" },
+          [
+            _c("pagination", {
+              attrs: { data: _vm.commentData, limit: 2, align: "center" },
+              on: { "pagination-change-page": _vm.getResults }
+            })
+          ],
+          1
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Judul Topik")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: {
-          type: "text",
-          placeholder:
-            "Contoh: Dari umur berapa bayi boleh diberi makanan padat?"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-outline-primary mb-3 btn-block",
-        attrs: { type: "button" }
-      },
-      [
-        _c("i", { staticClass: "fal fa-pencil-alt mr-1" }),
-        _vm._v(" Kirim Pertanyaan\n            ")
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "topic-info" }, [
-      _c("div", { staticClass: "total-reply" }, [
-        _c("span", { staticClass: "text-primary" }, [_vm._v("0 Balasan")]),
-        _vm._v(" "),
-        _c("i", { staticClass: "fas fa-comment ml-2 text-primary" })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "reply-time" }, [
-        _c("span", { staticClass: "text-secondary" }, [
-          _vm._v("1 menit yang lalu")
-        ]),
-        _vm._v(" "),
-        _c("i", { staticClass: "fas fa-clock ml-2 text-primary" })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "topic-container" }, [
-      _c("img", {
-        staticClass: "mr-1 img rounded-circle",
-        attrs: {
-          src:
-            "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-          alt: "Generic placeholder image"
-        }
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "topic-title" }, [
-        _c(
-          "span",
-          {
-            staticClass:
-              "card-title font-weight-bold text-decoration-none text-dark"
-          },
-          [_vm._v("\n                    Shaving Kulit\n                  ")]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "topic-by text-secondary" }, [
-          _vm._v("\n                    Oleh: David\n                  ")
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "topic-detail" }, [
-      _c("p", { staticClass: "mb-0" }, [
-        _vm._v(
-          "\n                  Dok, saya liat di online ada yang jual cream perontok bulu\n                  (khusus kelamin) apakah aman untuk dipakai laki-laki dok?\n                  Soalnya laki-laki mempunyai...\n                "
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c("ul", { staticClass: "pagination justify-content-center mt-4" }, [
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Previous" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("1")
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5 border-0",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body text-black-50" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-4x" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
           ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("2")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("3")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Next" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Next")])
-            ]
-          )
-        ])
-      ])
+        ]
+      )
     ])
   }
 ]
@@ -77320,337 +77505,324 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-lg-10" }, [
-          _c("section", { staticClass: "mt-3" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _vm._m(1),
-            _vm._v(" "),
-            _c("h5", { staticClass: "h6 mb-2 text-secondary mt-3" }, [
-              _vm._v("Balas sebagai dokter")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "mb-5" }, [
-              _c(
-                "div",
-                { staticClass: "form-group" },
-                [
-                  _c("wysiwyg", {
-                    model: {
-                      value: _vm.myHTML,
-                      callback: function($$v) {
-                        _vm.myHTML = $$v
-                      },
-                      expression: "myHTML"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _vm._m(2)
-            ]),
-            _vm._v(" "),
-            _vm._m(3)
+  return _c(
+    "div",
+    [
+      _c("Toasts"),
+      _vm._v(" "),
+      _c("div", { staticClass: "container" }, [
+        _c("div", { staticClass: "row justify-content-center" }, [
+          _c("div", { staticClass: "col-lg-10" }, [
+            _c(
+              "section",
+              { staticClass: "mt-3" },
+              [
+                _c("div", { staticClass: "w-100 mb-3" }, [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "text-decoration-none",
+                      attrs: { href: _vm.home + "/ask" }
+                    },
+                    [
+                      _c("i", { staticClass: "far fa-arrow-left mr-1" }),
+                      _vm._v(" Kembali ke diskusi\n            ")
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "user-topic-container" }, [
+                  _c("div", { staticClass: "user-topic-title" }, [
+                    _c("h1", { staticClass: "h4 font-weight-bold" }, [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(_vm.comment.judul) +
+                          "\n              "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "related-topic-card border-bottom-0" },
+                      [
+                        _c("div", { staticClass: "topic-info" }, [
+                          _c("div", { staticClass: "total-reply" }, [
+                            _c("span", { staticClass: "text-secondary" }, [
+                              _vm._v(
+                                _vm._s(_vm.momentJsAtas(_vm.comment.created_at))
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "reply-time" }, [
+                            _c("span", { staticClass: "text-secondary" }, [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.momentJsBawah(_vm.comment.created_at)
+                                )
+                              )
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "topic-container" }, [
+                          _c("img", {
+                            staticClass: "mr-1 img rounded-circle",
+                            attrs: {
+                              src:
+                                _vm.storage +
+                                "/avatar/" +
+                                _vm.comment.user.avatar,
+                              alt: "Generic placeholder image"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "topic-title" }, [
+                            _c(
+                              "span",
+                              {
+                                staticClass:
+                                  "card-title font-weight-bold text-decoration-none text-dark h5 text-capitalize"
+                              },
+                              [
+                                _vm._v(
+                                  "\n                      " +
+                                    _vm._s(_vm.comment.user.name) +
+                                    "\n                    "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "topic-by text-secondary text-capitalize"
+                              },
+                              [
+                                _vm._v(
+                                  "\n                      " +
+                                    _vm._s(_vm.comment.user.role) +
+                                    "\n                    "
+                                )
+                              ]
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "topic-detail-user" }, [
+                          _c("p", {
+                            staticClass: "mb-0",
+                            domProps: { innerHTML: _vm._s(_vm.comment.subject) }
+                          })
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm.current_user && _vm.current_user.role == "doctor"
+                  ? _c("div", [
+                      _c("h5", { staticClass: "h6 mb-2 text-secondary mt-3" }, [
+                        _vm._v("Balas sebagai dokter")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "mb-5" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _c("wysiwyg", {
+                              model: {
+                                value: _vm.create_data.balasan,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.create_data, "balasan", $$v)
+                                },
+                                expression: "create_data.balasan"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.errors.balasan
+                              ? _c("small", { staticClass: "text-danger" }, [
+                                  _vm._v(
+                                    "\n                  " +
+                                      _vm._s(_vm.errors.balasan[0]) +
+                                      "\n                "
+                                  )
+                                ])
+                              : _vm._e()
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-outline-primary mb-3 btn-block",
+                            attrs: { type: "button" },
+                            on: { click: _vm.createReplies }
+                          },
+                          [
+                            _c("i", { staticClass: "fal fa-pencil-alt mr-1" }),
+                            _vm._v(" Kirim Balasan\n              ")
+                          ]
+                        )
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.repliesData.data, function(replies) {
+                  return _c(
+                    "div",
+                    { key: replies.id, staticClass: "card mt-3" },
+                    [
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("h6", { staticClass: "text-secondary" }, [
+                          _vm._v("Dijawab oleh:")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "related-topic-card border-bottom-0 pb-0"
+                          },
+                          [
+                            _c("div", { staticClass: "topic-info" }, [
+                              _c("div", { staticClass: "total-reply" }, [
+                                _c("span", { staticClass: "text-secondary" }, [
+                                  _vm._v(
+                                    _vm._s(_vm.momentJsAtas(replies.created_at))
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "reply-time" }, [
+                                _c("span", { staticClass: "text-secondary" }, [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.momentJsBawah(replies.created_at)
+                                    )
+                                  )
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "topic-container" }, [
+                              _c("img", {
+                                staticClass: "mr-1 img rounded-circle",
+                                attrs: {
+                                  src:
+                                    _vm.storage +
+                                    "/avatar/" +
+                                    replies.user.avatar,
+                                  alt: "Generic placeholder image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "topic-title" }, [
+                                _c(
+                                  "span",
+                                  {
+                                    staticClass:
+                                      "card-title font-weight-bold text-decoration-none text-dark h5"
+                                  },
+                                  [
+                                    _vm._v("\n                    dr. "),
+                                    _c(
+                                      "span",
+                                      { staticClass: "text-capitalize" },
+                                      [
+                                        _vm._v(
+                                          _vm._s(
+                                            replies.user.fullname
+                                              ? replies.user.fullname
+                                              : replies.user.name
+                                          )
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "topic-by text-secondary text-capitalize"
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                      " +
+                                        _vm._s(replies.user.role) +
+                                        "\n                    "
+                                    )
+                                  ]
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", {
+                              staticClass: "topic-detail-user",
+                              domProps: { innerHTML: _vm._s(replies.balasan) }
+                            })
+                          ]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(0, true)
+                    ]
+                  )
+                })
+              ],
+              2
+            )
           ])
-        ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "mt-5" },
+          [
+            _c("pagination", {
+              attrs: { data: _vm.repliesData, limit: 2, align: "center" },
+              on: { "pagination-change-page": _vm.getResults }
+            })
+          ],
+          1
+        )
       ])
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "w-100 mb-3" }, [
-      _c("a", { staticClass: "text-decoration-none", attrs: { href: "#" } }, [
-        _c("i", { staticClass: "far fa-arrow-left mr-1" }),
-        _vm._v(" Kembali ke diskusi\n            ")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "user-topic-container" }, [
-      _c("div", { staticClass: "user-topic-title" }, [
-        _c("h1", { staticClass: "h4 font-weight-bold" }, [
-          _vm._v(
-            "\n                Perut terasa kenyang padahal belum makan nasi\n              "
-          )
+    return _c("div", { staticClass: "card-body border-top" }, [
+      _c("div", { staticClass: "form-inline" }, [
+        _c("div", { staticClass: "custom-control my-1 mr-sm-2 pl-0" }, [
+          _c("h5", { staticClass: "card-title mb-0" }, [
+            _vm._v(
+              "\n                    Apakah jawaban ini membantu?\n                  "
+            )
+          ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "related-topic-card border-bottom-0" }, [
-          _c("div", { staticClass: "topic-info" }, [
-            _c("div", { staticClass: "total-reply" }, [
-              _c("span", { staticClass: "text-secondary" }, [
-                _vm._v("7 April 2021")
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "reply-time" }, [
-              _c("span", { staticClass: "text-secondary" }, [_vm._v("20:12")])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "topic-container" }, [
-            _c("img", {
-              staticClass: "mr-1 img rounded-circle",
-              attrs: {
-                src:
-                  "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-                alt: "Generic placeholder image"
-              }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "topic-title" }, [
-              _c(
-                "span",
-                {
-                  staticClass:
-                    "card-title font-weight-bold text-decoration-none text-dark h5"
-                },
-                [_vm._v("\n                      David\n                    ")]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "topic-by text-secondary" }, [
-                _vm._v("\n                      Anggota\n                    ")
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "topic-detail-user" }, [
-            _c("p", { staticClass: "mb-0" }, [
-              _vm._v(
-                "\n                  Malam dokter, sudah 2 hari ini saya ngerasa perut saya terasa kenyang padahal saya belum makan nasi, ngeliat nasi juga ngerasa udah kenyang, terus susah juga untuk BAB susah, kira-kira kenaoa ya dok? Makasih\n                  "
-              )
-            ])
-          ])
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-outline-primary mb-3 btn-block",
-        attrs: { type: "button" }
-      },
-      [
-        _c("i", { staticClass: "fal fa-pencil-alt mr-1" }),
-        _vm._v(" Kirim Balasan\n            ")
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card mt-3" }, [
-      _c("div", { staticClass: "card-body" }, [
-        _c("h6", { staticClass: "text-secondary" }, [_vm._v("Dijawab oleh: ")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "related-topic-card border-bottom-0 pb-0" }, [
-          _c("div", { staticClass: "topic-info" }, [
-            _c("div", { staticClass: "total-reply" }, [
-              _c("span", { staticClass: "text-secondary" }, [
-                _vm._v("7 April 2021")
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "reply-time" }, [
-              _c("span", { staticClass: "text-secondary" }, [_vm._v("21:31")])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "topic-container" }, [
-            _c("img", {
-              staticClass: "mr-1 img rounded-circle",
-              attrs: {
-                src:
-                  "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-                alt: "Generic placeholder image"
-              }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "topic-title" }, [
-              _c(
-                "span",
-                {
-                  staticClass:
-                    "card-title font-weight-bold text-decoration-none text-dark h5"
-                },
-                [
-                  _vm._v(
-                    "\n                      dr. Steven A. Yuwono\n                    "
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "topic-by text-secondary" }, [
-                _vm._v("\n                      Dokter\n                    ")
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "topic-detail-user" }, [
-            _c("p", [_vm._v("Halo, terimakasih telah bertanya di Alodokter.")]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v(
-                "Perut terasa kenyang atau penuh bahkan sebelum makan disertai dengan sulit buang air besar dapat di sebabkan oleh beberpaa faktor kemungkinan seperti:"
-              )
-            ]),
-            _vm._v(" "),
-            _c("ul", [
-              _c("li", [
-                _c(
-                  "a",
-                  {
-                    attrs: {
-                      href: "https://www.alodokter.com/penyakit-asam-lambung"
-                    }
-                  },
-                  [_vm._v("GERD")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _c(
-                  "a",
-                  {
-                    attrs: {
-                      href:
-                        "https://www.alodokter.com/sindrom-dispepsia-seperti-ini-gejala-dan-cara-mengobatinya"
-                    }
-                  },
-                  [_vm._v("Dispepsia")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _c(
-                  "a",
-                  {
-                    attrs: { href: "https://www.alodokter.com/tukak-lambung" }
-                  },
-                  [_vm._v("Tukak lambung")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _c(
-                  "a",
-                  {
-                    attrs: { href: "https://www.alodokter.com/ulkus-duodenum" }
-                  },
-                  [_vm._v("Ulkus duodenum")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _c(
-                  "a",
-                  { attrs: { href: "https://www.alodokter.com/batu-empedu" } },
-                  [_vm._v("Cholelithiasis")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _c(
-                  "a",
-                  { attrs: { href: "https://www.alodokter.com/kolesistitis" } },
-                  [_vm._v("Cholecystitis")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _c(
-                  "a",
-                  { attrs: { href: "https://www.alodokter.com/konstipasi" } },
-                  [_vm._v("Konstipasi")]
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("p", [_vm._v("Untuk sementara yang dapat anda lakukan:")]),
-            _vm._v(" "),
-            _c("ul", [
-              _c("li", [_vm._v("Makan secara rutin dan teratur")]),
-              _vm._v(" "),
-              _c("li", [
-                _vm._v(
-                  "Makan sedikit demi sedikit namun lebih sering, 5-6x sehari dengan porsi kecil"
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [_vm._v("Hindari makan hingga terlalu kenyang")]),
-              _vm._v(" "),
-              _c("li", [
-                _vm._v("Hindari makanan pedas asam, santan, berminyak")
-              ]),
-              _vm._v(" "),
-              _c("li", [
-                _vm._v(
-                  "Hindari minuman berkafein seperti kopi, teh dan bersoda"
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [_vm._v("Jangan berbaring setelah makan")]),
-              _vm._v(" "),
-              _c("li", [
-                _vm._v(
-                  "Hindari tidur setelah makan, beri jarak waktu setidaknya 2-3 jam setelah makan"
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", [_vm._v("Perbanyak minum air putih")]),
-              _vm._v(" "),
-              _c("li", [
-                _vm._v("Tidur dengan 2-3 bantal dengan posisi menyandar")
-              ]),
-              _vm._v(" "),
-              _c("li", [_vm._v("Lakukan kelola stress")]),
-              _vm._v(" "),
-              _c("li", [_vm._v("Tidur dan istirahat cukup 7-9 jam per hari")])
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "mb-0" }, [
-              _vm._v("Sekian informasi dari saya, semoga membantu")
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body border-top" }, [
-        _c("form", { staticClass: "form-inline" }, [
-          _c("div", { staticClass: "custom-control my-1 mr-sm-2 pl-0" }, [
-            _c("h5", { staticClass: "card-title mb-0" }, [
-              _vm._v("Apakah jawaban ini membantu?")
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary my-1 btn-sm",
-              attrs: { type: "submit" }
-            },
-            [
-              _c("i", { staticClass: "fas fa-thumbs-up mr-1" }),
-              _vm._v(" Ya\n                ")
-            ]
-          )
-        ])
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary my-1 btn-sm",
+            attrs: { type: "submit" }
+          },
+          [
+            _c("i", { staticClass: "fas fa-thumbs-up mr-1" }),
+            _vm._v(" Ya\n                ")
+          ]
+        )
       ])
     ])
   }
@@ -77684,56 +77856,58 @@ var render = function() {
           _vm._v("Daftar Dokter")
         ]),
         _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row justify-content-center" },
-          _vm._l(6, function(n) {
-            return _c("div", { key: n, staticClass: "col-lg-10" }, [
-              _c("div", { staticClass: "card mb-3" }, [
-                _c("div", { staticClass: "row no-gutters" }, [
-                  _vm._m(0, true),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-10" }, [
-                    _c("div", { staticClass: "card-body" }, [
-                      _c("div", { staticClass: "row" }, [
-                        _vm._m(1, true),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "col-3 border-left text-center" },
-                          [
-                            _c("h6", { staticClass: "font-weight-bold" }, [
-                              _vm._v("Ulasan Dokter")
-                            ]),
-                            _vm._v(" "),
-                            _vm._m(2, true),
+         true
+          ? _c(
+              "div",
+              { staticClass: "row justify-content-center" },
+              _vm._l(6, function(n) {
+                return _c("div", { key: n, staticClass: "col-lg-10" }, [
+                  _c("div", { staticClass: "card mb-3" }, [
+                    _c("div", { staticClass: "row no-gutters" }, [
+                      _vm._m(0, true),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-10" }, [
+                        _c("div", { staticClass: "card-body" }, [
+                          _c("div", { staticClass: "row" }, [
+                            _vm._m(1, true),
                             _vm._v(" "),
                             _c(
-                              "a",
-                              {
-                                staticClass:
-                                  "btn btn-outline-secondary btn-sm btn-block",
-                                attrs: {
-                                  href: _vm.home + "/doctor/" + n,
-                                  role: "button"
-                                }
-                              },
-                              [_vm._v("Detail")]
+                              "div",
+                              { staticClass: "col-3 border-left text-center" },
+                              [
+                                _c("h6", { staticClass: "font-weight-bold" }, [
+                                  _vm._v("Ulasan Dokter")
+                                ]),
+                                _vm._v(" "),
+                                _vm._m(2, true),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass:
+                                      "btn btn-outline-secondary btn-sm btn-block",
+                                    attrs: {
+                                      href: _vm.home + "/doctor/" + n,
+                                      role: "button"
+                                    }
+                                  },
+                                  [_vm._v("Detail")]
+                                )
+                              ]
                             )
-                          ]
-                        )
+                          ])
+                        ])
                       ])
                     ])
                   ])
                 ])
-              ])
-            ])
-          }),
-          0
-        )
+              }),
+              0
+            )
+          : 0
       ]),
       _vm._v(" "),
-      _vm._m(3)
+      _vm._m(4)
     ])
   ])
 }
@@ -77792,6 +77966,29 @@ var staticRenderFns = [
     return _c("p", { staticClass: "user-select-none" }, [
       _c("i", { staticClass: "fas fa-thumbs-up text-primary" }),
       _vm._v(" (120)\n                      ")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5 border-0",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body text-black-50" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-4x" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
+          ])
+        ]
+      )
     ])
   },
   function() {
@@ -78467,130 +78664,139 @@ var render = function() {
             _vm._v("Berita Kehilangan")
           ]),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "row" },
-            _vm._l(_vm.newsData.data, function(news) {
-              return _c(
+          _vm.newsData.data && _vm.newsData.data.length > 0
+            ? _c(
                 "div",
-                {
-                  key: news.id,
-                  staticClass: "col col-lg-6 col-md-6 col-sm-12"
-                },
-                [
-                  _c("div", { staticClass: "card card-animal mb-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass: "embed-responsive embed-responsive-16by9"
-                      },
-                      [
-                        _c("img", {
-                          staticClass:
-                            "card-img-top embed-responsive-item obj-fit-cover",
-                          attrs: {
-                            src: _vm.storage + "/" + news.photo,
-                            alt: "animal"
-                          }
-                        })
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "card-body" }, [
-                      _c("h5", { staticClass: "card-title" }, [
-                        _vm._v(_vm._s(news.judul))
-                      ]),
-                      _vm._v(" "),
-                      _c("p", { staticClass: "card-text truncate-3" }, [
-                        _vm._v(
-                          "\n              " +
-                            _vm._s(_vm._f("strippedContent")(news.deskripsi)) +
-                            "\n              "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-outline-secondary btn-sm",
-                          attrs: {
-                            type: "button",
-                            "data-toggle": "modal",
-                            "data-target": "#staticBackdrop" + news.id
-                          }
-                        },
-                        [
-                          _vm._v(
-                            "\n                Selengkapnya\n              "
-                          )
-                        ]
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c(
+                { staticClass: "row" },
+                _vm._l(_vm.newsData.data, function(news) {
+                  return _c(
                     "div",
                     {
-                      staticClass: "modal fade",
-                      attrs: {
-                        id: "staticBackdrop" + news.id,
-                        "data-backdrop": "static",
-                        "data-keyboard": "false",
-                        tabindex: "-1",
-                        "aria-labelledby": "staticBackdropLabel",
-                        "aria-hidden": "true"
-                      }
+                      key: news.id,
+                      staticClass: "col col-lg-6 col-md-6 col-sm-12"
                     },
                     [
+                      _c("div", { staticClass: "card card-animal mb-3" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "embed-responsive embed-responsive-16by9"
+                          },
+                          [
+                            _c("img", {
+                              staticClass:
+                                "card-img-top embed-responsive-item obj-fit-cover",
+                              attrs: {
+                                src: _vm.storage + "/" + news.photo,
+                                alt: "animal"
+                              }
+                            })
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "card-body" }, [
+                          _c("h5", { staticClass: "card-title" }, [
+                            _vm._v(_vm._s(news.judul))
+                          ]),
+                          _vm._v(" "),
+                          _c("p", { staticClass: "card-text truncate-3" }, [
+                            _vm._v(
+                              "\n              " +
+                                _vm._s(
+                                  _vm._f("strippedContent")(news.deskripsi)
+                                ) +
+                                "\n              "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-outline-secondary btn-sm",
+                              attrs: {
+                                type: "button",
+                                "data-toggle": "modal",
+                                "data-target": "#staticBackdrop" + news.id
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                Selengkapnya\n              "
+                              )
+                            ]
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
                       _c(
                         "div",
                         {
-                          staticClass:
-                            "modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                          staticClass: "modal fade",
+                          attrs: {
+                            id: "staticBackdrop" + news.id,
+                            "data-backdrop": "static",
+                            "data-keyboard": "false",
+                            tabindex: "-1",
+                            "aria-labelledby": "staticBackdropLabel",
+                            "aria-hidden": "true"
+                          }
                         },
                         [
-                          _c("div", { staticClass: "modal-content" }, [
-                            _c("div", { staticClass: "modal-header" }, [
-                              _c(
-                                "h5",
-                                {
-                                  staticClass: "modal-title",
-                                  attrs: { id: "staticBackdropLabel" }
-                                },
-                                [_vm._v(_vm._s(news.judul))]
-                              ),
-                              _vm._v(" "),
-                              _vm._m(0, true)
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "modal-body" }, [
-                              _c("img", {
-                                staticClass: "img-fluid w-100",
-                                attrs: {
-                                  src: _vm.storage + "/" + news.photo,
-                                  alt: "img-animal"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("h6", { staticClass: "my-3" }, [
-                                _vm._v("Deskripsi")
-                              ]),
-                              _vm._v(" "),
-                              _c("div", {
-                                staticClass: "deskripsi",
-                                domProps: { innerHTML: _vm._s(news.deskripsi) }
-                              })
-                            ])
-                          ])
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                            },
+                            [
+                              _c("div", { staticClass: "modal-content" }, [
+                                _c("div", { staticClass: "modal-header" }, [
+                                  _c(
+                                    "h5",
+                                    {
+                                      staticClass: "modal-title",
+                                      attrs: { id: "staticBackdropLabel" }
+                                    },
+                                    [_vm._v(_vm._s(news.judul))]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._m(0, true)
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "modal-body" }, [
+                                  _c("img", {
+                                    staticClass: "img-fluid w-100",
+                                    attrs: {
+                                      src: _vm.storage + "/" + news.photo,
+                                      alt: "img-animal"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("h6", { staticClass: "my-3" }, [
+                                    _vm._v("Deskripsi")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", {
+                                    staticClass: "deskripsi",
+                                    domProps: {
+                                      innerHTML: _vm._s(news.deskripsi)
+                                    }
+                                  })
+                                ])
+                              ])
+                            ]
+                          )
                         ]
                       )
                     ]
                   )
-                ]
+                }),
+                0
               )
-            }),
-            0
-          )
+            : _c("div", { staticClass: "row justify-content-md-center mt-3" }, [
+                _vm._m(1)
+              ])
         ]),
         _vm._v(" "),
         _c("pagination", {
@@ -78619,6 +78825,29 @@ var staticRenderFns = [
       },
       [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5 border-0",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body text-black-50" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-4x" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
+          ])
+        ]
+      )
+    ])
   }
 ]
 render._withStripped = true
@@ -78644,145 +78873,181 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "section",
-      { staticClass: "mt-3" },
-      [
-        _c("h2", { staticClass: "text-center h2 mb-4" }, [
-          _vm._v("Cara merawat hewan")
-        ]),
-        _vm._v(" "),
-        _vm._l(_vm.treatData.data, function(item, index) {
-          return _c("div", { key: item.id }, [
-            index % 2 == 0
-              ? _c("div", { staticClass: "card border-0 shadow-sm mt-4" }, [
-                  _c("div", { staticClass: "row align-items-center" }, [
-                    _c("div", { staticClass: "col-md-7 order-md-2" }, [
-                      _c("div", { staticClass: "card-body" }, [
-                        _c(
-                          "a",
-                          {
-                            staticClass: "text-decoration-none",
-                            attrs: { href: _vm.home + "/treat/" + item.slug }
-                          },
-                          [
+    _c("section", { staticClass: "mt-3" }, [
+      _c("h2", { staticClass: "text-center h2 mb-4" }, [
+        _vm._v("Cara merawat hewan")
+      ]),
+      _vm._v(" "),
+      _vm.treatData.data && _vm.treatData.data.length > 0
+        ? _c(
+            "div",
+            { staticClass: "row" },
+            _vm._l(_vm.treatData.data, function(item, index) {
+              return _c("div", { key: item.id }, [
+                index % 2 == 0
+                  ? _c("div", { staticClass: "card border-0 shadow-sm mt-4" }, [
+                      _c("div", { staticClass: "row align-items-center" }, [
+                        _c("div", { staticClass: "col-md-7 order-md-2" }, [
+                          _c("div", { staticClass: "card-body" }, [
                             _c(
-                              "h2",
-                              { staticClass: "featurette-heading truncate-2" },
+                              "a",
+                              {
+                                staticClass: "text-decoration-none",
+                                attrs: {
+                                  href: _vm.home + "/treat/" + item.slug
+                                }
+                              },
                               [
-                                _vm._v(
-                                  "\n                  " +
-                                    _vm._s(item.judul) +
-                                    "\n                "
+                                _c(
+                                  "h2",
+                                  {
+                                    staticClass: "featurette-heading truncate-2"
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(item.judul) +
+                                        "\n                  "
+                                    )
+                                  ]
                                 )
                               ]
-                            )
-                          ]
-                        ),
+                            ),
+                            _vm._v(" "),
+                            _c("p", { staticClass: "lead truncate-3" }, [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(
+                                    _vm._f("strippedContent")(item.deskripsi)
+                                  ) +
+                                  "\n                "
+                              )
+                            ])
+                          ])
+                        ]),
                         _vm._v(" "),
-                        _c("p", { staticClass: "lead truncate-3" }, [
-                          _vm._v(
-                            "\n              " +
-                              _vm._s(
-                                _vm._f("strippedContent")(item.deskripsi)
-                              ) +
-                              "\n              "
-                          )
+                        _c("div", { staticClass: "col-md-5 order-md-1" }, [
+                          _c("img", {
+                            staticClass: "img-fluid mx-auto",
+                            staticStyle: {
+                              width: "450px",
+                              height: "450px",
+                              "object-fit": "cover"
+                            },
+                            attrs: {
+                              src: _vm.storage + "/" + item.photo,
+                              width: "500",
+                              height: "500"
+                            }
+                          })
                         ])
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-5 order-md-1" }, [
-                      _c("img", {
-                        staticClass: "img-fluid mx-auto",
-                        staticStyle: {
-                          width: "450px",
-                          height: "450px",
-                          "object-fit": "cover"
-                        },
-                        attrs: {
-                          src: _vm.storage + "/" + item.photo,
-                          width: "500",
-                          height: "500"
-                        }
-                      })
                     ])
-                  ])
-                ])
-              : _c("div", { staticClass: "card border-0 shadow-sm mt-4" }, [
-                  _c("div", { staticClass: "row align-items-center" }, [
-                    _c("div", { staticClass: "col-md-7" }, [
-                      _c("div", { staticClass: "card-body" }, [
-                        _c(
-                          "a",
-                          {
-                            staticClass: "text-decoration-none",
-                            attrs: { href: _vm.home + "/treat/" + item.slug }
-                          },
-                          [
+                  : _c("div", { staticClass: "card border-0 shadow-sm mt-4" }, [
+                      _c("div", { staticClass: "row align-items-center" }, [
+                        _c("div", { staticClass: "col-md-7" }, [
+                          _c("div", { staticClass: "card-body" }, [
                             _c(
-                              "h2",
-                              { staticClass: "featurette-heading truncate-2" },
+                              "a",
+                              {
+                                staticClass: "text-decoration-none",
+                                attrs: {
+                                  href: _vm.home + "/treat/" + item.slug
+                                }
+                              },
                               [
-                                _vm._v(
-                                  "\n                  " +
-                                    _vm._s(item.judul) +
-                                    "\n                "
+                                _c(
+                                  "h2",
+                                  {
+                                    staticClass: "featurette-heading truncate-2"
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(item.judul) +
+                                        "\n                  "
+                                    )
+                                  ]
                                 )
                               ]
-                            )
-                          ]
-                        ),
+                            ),
+                            _vm._v(" "),
+                            _c("p", { staticClass: "lead truncate-3" }, [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(
+                                    _vm._f("strippedContent")(item.deskripsi)
+                                  ) +
+                                  "\n                "
+                              )
+                            ])
+                          ])
+                        ]),
                         _vm._v(" "),
-                        _c("p", { staticClass: "lead truncate-3" }, [
-                          _vm._v(
-                            "\n              " +
-                              _vm._s(
-                                _vm._f("strippedContent")(item.deskripsi)
-                              ) +
-                              "\n              "
-                          )
+                        _c("div", { staticClass: "col-md-5" }, [
+                          _c("img", {
+                            staticClass: "img-fluid mx-auto float-right",
+                            staticStyle: {
+                              width: "450px",
+                              height: "450px",
+                              "object-fit": "cover"
+                            },
+                            attrs: {
+                              src: _vm.storage + "/" + item.photo,
+                              width: "500",
+                              height: "500"
+                            }
+                          })
                         ])
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-5" }, [
-                      _c("img", {
-                        staticClass: "img-fluid mx-auto float-right",
-                        staticStyle: {
-                          width: "450px",
-                          height: "450px",
-                          "object-fit": "cover"
-                        },
-                        attrs: {
-                          src: _vm.storage + "/" + item.photo,
-                          width: "500",
-                          height: "500"
-                        }
-                      })
                     ])
-                  ])
-                ])
-          ])
-        }),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "mt-5" },
-          [
-            _c("pagination", {
-              attrs: { data: _vm.treatData, limit: 2, align: "center" },
-              on: { "pagination-change-page": _vm.getResults }
-            })
-          ],
-          1
-        )
-      ],
-      2
-    )
+              ])
+            }),
+            0
+          )
+        : _c("div", { staticClass: "row justify-content-md-center mt-3" }, [
+            _vm._m(0)
+          ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "mt-5" },
+        [
+          _c("pagination", {
+            attrs: { data: _vm.treatData, limit: 2, align: "center" },
+            on: { "pagination-change-page": _vm.getResults }
+          })
+        ],
+        1
+      )
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          staticClass: "card shadow-none text-center pt-5 pb-5 border-0",
+          staticStyle: { "background-color": "transparent" }
+        },
+        [
+          _c("div", { staticClass: "card-body text-black-50" }, [
+            _c("i", { staticClass: "fal fa-box-open fa-4x" }),
+            _vm._v(" "),
+            _c("p", { staticClass: "font-weight-bold mt-1" }, [
+              _vm._v("Data tidak tersedia.")
+            ])
+          ])
+        ]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 
