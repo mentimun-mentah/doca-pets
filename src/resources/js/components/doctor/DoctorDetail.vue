@@ -7,16 +7,16 @@
             <div class="media">
               <img 
                 class="mr-3 img rounded-circle" 
-                src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1" 
+                :src="storage + '/' + doctor.user.avatar" 
                 alt="Generic placeholder image"
               >
               <div class="media-body">
                 <h5 class="card-title font-weight-bold mb-1">
-                  dr. Kathleen Juanita Gunawan Soenario, Sp.OG
-                  <span class="float-right font-weight-normal h6 user-select-none"> <i class="fas fa-thumbs-up text-primary"></i> (120) </span>
+                  dr. {{doctor.user.fullname ? doctor.user.fullname : doctor.user.name}}
+                  <span class="float-right font-weight-normal h6 user-select-none"> <i class="fas fa-thumbs-up text-primary"></i> ({{doctor.total_like}}) </span>
                 </h5>
-                <h5 class="card-title font-weight-bold text-secondary mb-1">Spesialis kandungan</h5>
-                <h6 class="card-title font-weight-bold text-secondary mb-0">3645413232237</h6>
+                <h5 class="card-title font-weight-bold text-secondary mb-1">{{doctor.spesialis ? 'Spesialis ' + doctor.spesialis : '-'}}</h5>
+                <h6 class="card-title font-weight-bold text-secondary mb-0">{{doctor.no_str}}</h6>
                 
               </div>
             </div>
@@ -25,33 +25,36 @@
 
             <div class="detail-dokter">
               <h6 class="h5 mb-2 font-weight-bold">Profile Dokter</h6>
-              <div class="profile-content text-justify">
-                <p>dr. Kathleen Juanita Gunawan Soenario, Sp.OG adalah seorang Dokter Spesialis Kebidanan dan Kandungan. Beliau menamatkan pendidikan Spesialis Obstetri dan Ginekologi di Fakultas Kedokteran, Universitas Diponegoro. Saat ini, dr. Kathleen Juanita berpraktek di Siloam Hospitals Kebon Jeruk, RS Bina Sehat Mandiri,&nbsp;dan RS Satya Negara sebagai Dokter Kandungan.</p>
+              <div class="profile-content" v-html="doctor.deskripsi" v-if="doctor.deskripsi">
               </div><!-- /profile-content -->
+              <div class="profile-content" v-else>-</div>
             </div><!-- /detail-dokter -->
 
             <div class="detail-dokter">
-              <h6 class="h5 mb-2 font-weight-bold">Lokasi - Siloam Hospitals Kebon Jeruk</h6>
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1704.5680577496535!2d115.18816135880937!3d-8.641001521903005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23fff77872345%3A0x4613532438b18a2b!2sTyo%20house!5e0!3m2!1sen!2sid!4v1617969409016!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+              <h6 class="h5 mb-2 font-weight-bold">Lokasi - {{doctor.nama_klinik ? doctor.nama_klinik : ''}}</h6>
+              <div class="maps-doctor" v-html="doctor.lokasi" v-if="doctor.lokasi">
+              </div>
+              <div class="maps-doctor" v-else>-</div>
             </div><!-- /detail-dokter -->
 
             <div class="detail-dokter">
               <h6 class="h5 mb-2 font-weight-bold">Pengalaman Praktik</h6>
-              <div class="card">
+              <div class="card" v-if="doctor.pengalaman_praktik">
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Dokter Kebidanan dan Kandungan - Siloam Hospitals Kebon Jeruk</li>
-                  <li class="list-group-item">Dokter Kebidanan dan Kandungan - RS Satya Negara</li>
+                  <li class="list-group-item" v-for="pengalaman in doctor.pengalaman_praktik.split(',')">{{pengalaman}}</li>
                 </ul>
               </div>
+              <div v-else>-</div>
             </div><!-- /detail-dokter -->
 
             <div class="detail-dokter">
               <h6 class="h5 mb-2 font-weight-bold">Riwayat Pendidikan</h6>
-              <div class="card">
+              <div class="card" v-if="doctor.riwayat_pendidikan">
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Sp.OG - Spesialis Obstetri dan Ginekologi - Universitas Diponegoro</li>
+                  <li class="list-group-item" v-for="riwayat in doctor.riwayat_pendidikan.split(',')">{{riwayat}}</li>
                 </ul>
               </div>
+              <div v-else>-</div>
             </div><!-- /detail-dokter -->
 
           </section>
@@ -66,6 +69,7 @@
 
 <script>
 export default {
+  props: ['doctor','storage']
 };
 </script>
 <style>
@@ -79,5 +83,8 @@ export default {
 }
 .detail-dokter { 
   margin-bottom: 25px;
+}
+.maps-doctor iframe {
+  width: 100%;
 }
 </style>

@@ -15,13 +15,13 @@ class CreateDoctorsTable extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('total_like')->default(0); 
             $table->string('no_str')->unique();
             $table->string('sertif');
             $table->string('surat_izin');
             $table->string('status',20);
             $table->string('nama_klinik')->nullable();
             $table->string('spesialis')->nullable();
-            $table->string('spesialis_singkatan',20)->nullable();
             $table->text('deskripsi')->nullable();
             $table->text('lokasi')->nullable();
             $table->text('pengalaman_praktik')->nullable();

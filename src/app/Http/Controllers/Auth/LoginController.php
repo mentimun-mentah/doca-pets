@@ -70,6 +70,18 @@ class LoginController extends Controller
             return view('auth.login');
           }
 
+          if(Auth::user()->role == 'doctor'){
+            $doctor = Auth::user()->doctor;    
+
+            if(
+              !$doctor->nama_klinik && !$doctor->spesialis &&
+              !$doctor->deskripsi && !$doctor->lokasi &&
+              !$doctor->pengalaman_praktik && !$doctor->riwayat_pendidikan
+            ){
+                return redirect('/doctor/profile');
+            }
+          }
+
             return $this->sendLoginResponse($request);
         }
 

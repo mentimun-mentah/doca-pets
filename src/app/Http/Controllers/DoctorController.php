@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Models\Doctor;
 use App\Models\User;
 use App\Jobs\SendEmailAcceptDoctor;
 use App\Jobs\SendEmailRejectDoctor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DoctorController extends Controller
 {
@@ -17,12 +19,45 @@ class DoctorController extends Controller
 
     public function show($id)
     {
-        return view('doctor.show');
+        $doctor = Doctor::with('user')->findOrFail($id);
+        return view('doctor.show',['doctor' => $doctor]);
     }
 
     public function profile()
     {
-        return view('doctor.profile');
+        $user = Doctor::where('user_id','=',Auth::user()->id)->firstOrFail();
+        return view('doctor.profile', ['user' => $user]);
+    }
+
+    public function allDoctorApprove(Request $request)
+    {
+        $query = Doctor::where('status','accept')->with('user');
+        return $query->orderBy('total_like', 'desc')->paginate(6);
+    }
+
+    public function updateProfile(Request $request)
+    {
+      $doctor = Doctor::findOrFail($request->id);
+
+      $request->validate([
+        'spesialis' => 'required|string|min:3|max:255',
+        'deskripsi' => 'required|string|min:5',
+        'nama_klinik' => 'required|string|min:3|max:255',
+        'lokasi' => 'required|regex:/<iframe\s*src="https:\/\/www\.google\.com\/maps\/embed\?[^"]+"*\s*[^>]+>*<\/iframe>/',
+        'pengalaman_praktik' => 'required|string|min:5',
+        'riwayat_pendidikan' => 'required|string|min:5'
+      ]);
+
+      $doctor->spesialis = $request->spesialis;
+      $doctor->deskripsi = $request->deskripsi;
+      $doctor->nama_klinik = $request->nama_klinik;
+      $doctor->lokasi = $request->lokasi;
+      $doctor->pengalaman_praktik = $request->pengalaman_praktik;
+      $doctor->riwayat_pendidikan = $request->riwayat_pendidikan;
+      $doctor->save();
+
+      toast('Success update profile','success');
+      return ['status' => 'Success update profile'];
     }
 
     public function getAllDoctor(Request $request)

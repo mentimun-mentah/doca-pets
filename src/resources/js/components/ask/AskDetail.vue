@@ -83,7 +83,9 @@
 
             <div class="card mt-3" v-for="replies in repliesData.data" :key="replies.id">
               <div class="card-body">
-                <h6 class="text-secondary">Dijawab oleh:</h6>
+                <h6 class="text-secondary">
+                  Dijawab oleh:
+                </h6>
                 <div class="related-topic-card border-bottom-0 pb-0">
                   <div class="topic-info">
                     <div class="total-reply">
@@ -93,6 +95,11 @@
                     <div class="reply-time">
                       <span class="text-secondary">{{momentJsBawah(replies.created_at)}}</span>
                     </div>
+
+                    <p class="user-select-none">
+                      <i class="fas fa-thumbs-up text-secondary"></i>
+                      <span class="text-secondary"> {{replies.likes_count}}</span>
+                    </p>
                   </div>
 
                   <div class="topic-container">
@@ -123,14 +130,14 @@
               </div>
               <!-- /card-body -->
 
-              <div class="card-body border-top">
+              <div class="card-body border-top" v-if="current_user && current_user.role != 'doctor' && checkLike(replies.id)">
                 <div class="form-inline">
                   <div class="custom-control my-1 mr-sm-2 pl-0">
                     <h5 class="card-title mb-0">
                       Apakah jawaban ini membantu?
                     </h5>
                   </div>
-                  <button type="submit" class="btn btn-primary my-1 btn-sm">
+                  <button type="submit" class="btn btn-primary my-1 btn-sm" @click="likeReplies(replies.id)">
                     <i class="fas fa-thumbs-up mr-1"></i> Ya
                   </button>
                 </div>
@@ -166,6 +173,7 @@ export default {
   data() {
     return {
       url: "/replies/all-replies",
+      tmpCheck: [],
       repliesData: {},
       create_data: {
         balasan: ""
@@ -178,6 +186,18 @@ export default {
       axios.get(`${this.url}/${this.comment.id}?page=${page}`).then(res => {
         this.repliesData = res.data;
       });
+    },
+    checkLike(id){
+      let f = this.tmpCheck.filter(x => x.id === id)
+      return (f[0] && f[0].is_like) ? f[0].is_like : false
+    },
+    likeReplies(id){
+      axios.post(`/replies/like/${id}`).then(res => {
+        this.getResults()
+        this.$toast.success(res.data.status);
+      }).catch(err => {
+        this.$toast.warning(err.response.data.status);
+      })
     },
     createReplies(){
       axios.post(`/replies/create/${this.comment.id}`,this.create_data).then(res => {
@@ -195,6 +215,18 @@ export default {
     },
     momentJsBawah(val) {
       return moment(val).format("LT");
+    }
+  },
+  watch:{
+    repliesData(val){
+      if(val.data && this.current_user && this.current_user.role != 'doctor'){
+        this.tmpCheck = []
+        this.repliesData.data.map(value => {
+          axios.get(`/replies/check-like/${value.id}`).then(res => {
+            this.tmpCheck.push({is_like: res.data === 1 ? false : true, id: value.id})
+          })
+        })
+      }
     }
   },
   mounted() {

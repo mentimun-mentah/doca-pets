@@ -301,6 +301,11 @@ export default {
     display: none;
   }
 }
+@media screen and (max-width: 720px) {
+  .topic-detail {
+    width: 100%;
+  }
+}
 .form[data-v-ebce4d12] {
   display: flex;
   align-content: flex-end;

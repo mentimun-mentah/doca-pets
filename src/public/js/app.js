@@ -5159,12 +5159,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["home", "comment", "storage", "current_user"],
   data: function data() {
     return {
       url: "/replies/all-replies",
+      tmpCheck: [],
       repliesData: {},
       create_data: {
         balasan: ""
@@ -5181,18 +5189,35 @@ __webpack_require__.r(__webpack_exports__);
         _this.repliesData = res.data;
       });
     },
-    createReplies: function createReplies() {
+    checkLike: function checkLike(id) {
+      var f = this.tmpCheck.filter(function (x) {
+        return x.id === id;
+      });
+      return f[0] && f[0].is_like ? f[0].is_like : false;
+    },
+    likeReplies: function likeReplies(id) {
       var _this2 = this;
 
-      axios.post("/replies/create/".concat(this.comment.id), this.create_data).then(function (res) {
+      axios.post("/replies/like/".concat(id)).then(function (res) {
         _this2.getResults();
 
         _this2.$toast.success(res.data.status);
-
-        _this2.errors = [];
-        _this2.create_data.balasan = "";
       })["catch"](function (err) {
-        if (err.response.status !== 422) _this2.$toast.warning(err.response.data.status);else _this2.errors = err.response.data.errors;
+        _this2.$toast.warning(err.response.data.status);
+      });
+    },
+    createReplies: function createReplies() {
+      var _this3 = this;
+
+      axios.post("/replies/create/".concat(this.comment.id), this.create_data).then(function (res) {
+        _this3.getResults();
+
+        _this3.$toast.success(res.data.status);
+
+        _this3.errors = [];
+        _this3.create_data.balasan = "";
+      })["catch"](function (err) {
+        if (err.response.status !== 422) _this3.$toast.warning(err.response.data.status);else _this3.errors = err.response.data.errors;
       });
     },
     momentJsAtas: function momentJsAtas(val) {
@@ -5200,6 +5225,23 @@ __webpack_require__.r(__webpack_exports__);
     },
     momentJsBawah: function momentJsBawah(val) {
       return moment__WEBPACK_IMPORTED_MODULE_0___default()(val).format("LT");
+    }
+  },
+  watch: {
+    repliesData: function repliesData(val) {
+      var _this4 = this;
+
+      if (val.data && this.current_user && this.current_user.role != 'doctor') {
+        this.tmpCheck = [];
+        this.repliesData.data.map(function (value) {
+          axios.get("/replies/check-like/".concat(value.id)).then(function (res) {
+            _this4.tmpCheck.push({
+              is_like: res.data === 1 ? false : true,
+              id: value.id
+            });
+          });
+        });
+      }
     }
   },
   mounted: function mounted() {
@@ -5307,19 +5349,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["home"]
+  props: ["home", "storage"],
+  data: function data() {
+    return {
+      url: '/doctor/all-doctor',
+      doctorData: {}
+    };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get("".concat(this.url, "?page=").concat(page)).then(function (res) {
+        _this.doctorData = res.data;
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getResults();
+  }
 });
 
 /***/ }),
@@ -5401,7 +5451,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['doctor', 'storage']
+});
 
 /***/ }),
 
@@ -5580,35 +5635,160 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['user', 'storage'],
+  data: function data() {
+    return {
+      update_data: {
+        spesialis: null,
+        deskripsi: null,
+        nama_klinik: null,
+        lokasi: null,
+        pengalaman_praktik: [{
+          value: ''
+        }],
+        riwayat_pendidikan: [{
+          value: ''
+        }]
+      },
+      errors: []
+    };
+  },
+  methods: {
+    updateProfile: function updateProfile() {
+      var _this = this;
+
+      var pengalaman_praktik = this.update_data.pengalaman_praktik.map(function (x) {
+        return x.value;
+      }).join(',');
+      var riwayat_pendidikan = this.update_data.riwayat_pendidikan.map(function (x) {
+        return x.value;
+      }).join(',');
+      var data = {
+        id: this.user.id,
+        spesialis: this.update_data.spesialis,
+        deskripsi: this.update_data.deskripsi,
+        nama_klinik: this.update_data.nama_klinik,
+        lokasi: this.update_data.lokasi,
+        pengalaman_praktik: pengalaman_praktik,
+        riwayat_pendidikan: riwayat_pendidikan
+      };
+      axios.post('/doctor/profile/update', data).then(function (res) {
+        location.reload();
+      })["catch"](function (err) {
+        _this.errors = err.response.data.errors;
+      });
+    },
+    addPengalaman: function addPengalaman() {
+      this.update_data.pengalaman_praktik.push({
+        value: ''
+      });
+    },
+    deletePengalaman: function deletePengalaman(index) {
+      this.update_data.pengalaman_praktik.splice(index, 1);
+    },
+    addPendidikan: function addPendidikan() {
+      this.update_data.riwayat_pendidikan.push({
+        value: ''
+      });
+    },
+    deletePendidikan: function deletePendidikan(index) {
+      this.update_data.riwayat_pendidikan.splice(index, 1);
+    }
+  },
   mounted: function mounted() {
-    $(function () {
-      $(document).on("click", ".btn-add-praktik", function (e) {
-        e.preventDefault();
-        var controlForm = $(".controls-praktik:first"),
-            currentEntry = $(this).parents(".entry-praktik:first"),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
-        newEntry.find("input").val("");
-        controlForm.find(".entry-praktik:not(:last) .btn-add-praktik").removeClass("btn-add-praktik").addClass("btn-remove-praktik").removeClass("btn-outline-dark").addClass("btn-outline-danger").html('<i class="far fa-minus"></i>');
-      }).on("click", ".btn-remove-praktik", function (e) {
-        $(this).parents(".entry-praktik:first").remove();
-        e.preventDefault();
-        return false;
-      });
+    this.update_data.spesialis = this.user.spesialis;
+    this.update_data.deskripsi = this.user.deskripsi;
+    this.update_data.nama_klinik = this.user.nama_klinik;
+    this.update_data.lokasi = this.user.lokasi;
+    this.update_data.pengalaman_praktik = this.user.pengalaman_praktik.split(",").map(function (x) {
+      return {
+        value: x
+      };
     });
-    $(function () {
-      $(document).on("click", ".btn-add-riwayat", function (e) {
-        e.preventDefault();
-        var controlForm = $(".controls-riwayat:first"),
-            currentEntry = $(this).parents(".entry-riwayat:first"),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
-        newEntry.find("input").val("");
-        controlForm.find(".entry-riwayat:not(:last) .btn-add-riwayat").removeClass("btn-add-riwayat").addClass("btn-remove-riwayat").removeClass("btn-outline-dark").addClass("btn-outline-danger").html('<i class="far fa-minus"></i>');
-      }).on("click", ".btn-remove-riwayat", function (e) {
-        $(this).parents(".entry-riwayat:first").remove();
-        e.preventDefault();
-        return false;
-      });
+    this.update_data.riwayat_pendidikan = this.user.riwayat_pendidikan.split(",").map(function (x) {
+      return {
+        value: x
+      };
     });
   }
 });
@@ -10727,7 +10907,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.related-topic-card {\n  padding: 20px 0 17px;\n  border-bottom: solid 1px #e0e0e0;\n}\n.topic-info {\n  float: right;\n  text-align: right;\n  font-size: 14px;\n}\n.topic-container {\n  margin-bottom: 16px;\n  display: inline-flex;\n  align-items: center;\n}\n.topic-detail {\n  width: 560px;\n  overflow-wrap: break-word;\n}\n.topic-title {\n  display: inline-block;\n  width: 350px;\n  vertical-align: top;\n  margin-left: 16px;\n}\n.topic-by {\n  line-height: 1.64;\n  font-size: 14px;\n  margin-bottom: 4px;\n}\n.editr {\n  border-radius: 0.25rem;\n  border: 1px solid #e4e4e4;\n  width: 100%;\n}\n.editr--toolbar {\n  background: #f6f6f6;\n  border-top-left-radius: 0.25rem;\n  border-top-right-radius: 0.25rem;\n  border-bottom: 1px solid #e4e4e4;\n  position: relative;\n  display: flex;\n  height: 32px;\n}\n.editr--toolbar a {\n  display: inline-block;\n  width: 8vw;\n  max-width: 32px;\n  height: 32px;\n  color: #333;\n  fill: #333;\n  cursor: pointer;\n  text-align: center;\n  line-height: 1;\n}\n.editr--toolbar a:hover {\n  background: rgba(0, 0, 0, 0.1);\n}\n.editr--toolbar a:active {\n  background: rgba(0, 0, 0, 0.2);\n}\n.editr--toolbar a svg {\n  width: 16px;\n  height: 16px;\n  margin: 8px auto;\n}\n.editr--toolbar a svg path {\n  fill: inherit;\n}\n.editr--toolbar a.vw-btn-separator {\n  width: 1px;\n  margin: 0 8px;\n}\n.editr--toolbar a.vw-btn-separator:hover {\n  background: initial;\n  cursor: default;\n}\n.editr--toolbar a.vw-btn-separator i.vw-separator {\n  border-left: 1px solid rgba(0, 0, 0, 0.1);\n  height: 100%;\n  position: absolute;\n  width: 1px;\n}\n.editr--toolbar .dashboard {\n  width: 100%;\n  position: absolute;\n  top: 32px;\n  left: 0;\n  text-align: left;\n  padding: 8px 16px;\n  background: rgba(255, 255, 255, 0.95);\n  border: 1px solid #f6f6f6;\n}\n.editr--content {\n  min-height: 150px;\n  padding: 12px 8px 16px 8px;\n  line-height: 1.33;\n  font-family: inherit;\n  color: inherit;\n  overflow-y: auto;\n  background: rgba(255, 255, 255, 0.95);\n  border-bottom-left-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.editr--content[contenteditable=\"true\"]:empty:before {\n  content: attr(placeholder);\n  color: rgba(0, 0, 0, 0.3);\n  display: block; /* For Firefox */\n}\n.editr--content img {\n  max-width: 100%;\n}\n.editr--content table {\n  width: 100%;\n  border-collapse: collapse;\n}\n.editr--content table th {\n  text-align: left;\n}\n.editr--content table th,\n.editr--content table td {\n  border: 1px solid #ddd;\n  padding: 2px;\n}\n.editr--content:focus {\n  outline: 0;\n}\n.editr--content ul li,\n.editr--content ol li {\n  list-style-position: inside;\n}\n@media screen and (max-width: 320px) {\n.editr--toolbar a {\n    margin: 0 2px;\n}\n.editr--toolbar a.vw-btn-separator {\n    display: none;\n}\n}\n.form[data-v-ebce4d12] {\n  display: flex;\n  align-content: flex-end;\n}\n.form label[data-v-ebce4d12] {\n  margin-right: 1rem;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.related-topic-card {\n  padding: 20px 0 17px;\n  border-bottom: solid 1px #e0e0e0;\n}\n.topic-info {\n  float: right;\n  text-align: right;\n  font-size: 14px;\n}\n.topic-container {\n  margin-bottom: 16px;\n  display: inline-flex;\n  align-items: center;\n}\n.topic-detail {\n  width: 560px;\n  overflow-wrap: break-word;\n}\n.topic-title {\n  display: inline-block;\n  width: 350px;\n  vertical-align: top;\n  margin-left: 16px;\n}\n.topic-by {\n  line-height: 1.64;\n  font-size: 14px;\n  margin-bottom: 4px;\n}\n.editr {\n  border-radius: 0.25rem;\n  border: 1px solid #e4e4e4;\n  width: 100%;\n}\n.editr--toolbar {\n  background: #f6f6f6;\n  border-top-left-radius: 0.25rem;\n  border-top-right-radius: 0.25rem;\n  border-bottom: 1px solid #e4e4e4;\n  position: relative;\n  display: flex;\n  height: 32px;\n}\n.editr--toolbar a {\n  display: inline-block;\n  width: 8vw;\n  max-width: 32px;\n  height: 32px;\n  color: #333;\n  fill: #333;\n  cursor: pointer;\n  text-align: center;\n  line-height: 1;\n}\n.editr--toolbar a:hover {\n  background: rgba(0, 0, 0, 0.1);\n}\n.editr--toolbar a:active {\n  background: rgba(0, 0, 0, 0.2);\n}\n.editr--toolbar a svg {\n  width: 16px;\n  height: 16px;\n  margin: 8px auto;\n}\n.editr--toolbar a svg path {\n  fill: inherit;\n}\n.editr--toolbar a.vw-btn-separator {\n  width: 1px;\n  margin: 0 8px;\n}\n.editr--toolbar a.vw-btn-separator:hover {\n  background: initial;\n  cursor: default;\n}\n.editr--toolbar a.vw-btn-separator i.vw-separator {\n  border-left: 1px solid rgba(0, 0, 0, 0.1);\n  height: 100%;\n  position: absolute;\n  width: 1px;\n}\n.editr--toolbar .dashboard {\n  width: 100%;\n  position: absolute;\n  top: 32px;\n  left: 0;\n  text-align: left;\n  padding: 8px 16px;\n  background: rgba(255, 255, 255, 0.95);\n  border: 1px solid #f6f6f6;\n}\n.editr--content {\n  min-height: 150px;\n  padding: 12px 8px 16px 8px;\n  line-height: 1.33;\n  font-family: inherit;\n  color: inherit;\n  overflow-y: auto;\n  background: rgba(255, 255, 255, 0.95);\n  border-bottom-left-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.editr--content[contenteditable=\"true\"]:empty:before {\n  content: attr(placeholder);\n  color: rgba(0, 0, 0, 0.3);\n  display: block; /* For Firefox */\n}\n.editr--content img {\n  max-width: 100%;\n}\n.editr--content table {\n  width: 100%;\n  border-collapse: collapse;\n}\n.editr--content table th {\n  text-align: left;\n}\n.editr--content table th,\n.editr--content table td {\n  border: 1px solid #ddd;\n  padding: 2px;\n}\n.editr--content:focus {\n  outline: 0;\n}\n.editr--content ul li,\n.editr--content ol li {\n  list-style-position: inside;\n}\n@media screen and (max-width: 320px) {\n.editr--toolbar a {\n    margin: 0 2px;\n}\n.editr--toolbar a.vw-btn-separator {\n    display: none;\n}\n}\n@media screen and (max-width: 720px) {\n.topic-detail {\n    width: 100%;\n}\n}\n.form[data-v-ebce4d12] {\n  display: flex;\n  align-content: flex-end;\n}\n.form label[data-v-ebce4d12] {\n  margin-right: 1rem;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10775,7 +10955,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.img-doctor {\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n  margin-right: 19px;\n  margin-left: 19px;\n  margin-top: 19px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.img-doctor {\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n  margin-right: 19px;\n  margin-left: 19px;\n  margin-top: 19px;\n  -o-object-fit: cover;\n     object-fit: cover;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10799,7 +10979,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.img-doctor {\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n  margin-right: 19px;\n  margin-left: 19px;\n  margin-top: 19px;\n}\n.detail-dokter { \n  margin-bottom: 25px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.img-doctor {\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n  margin-right: 19px;\n  margin-left: 19px;\n  margin-top: 19px;\n}\n.detail-dokter { \n  margin-bottom: 25px;\n}\n.maps-doctor iframe {\n  width: 100%;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -73484,7 +73664,7 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _vm.newsData && _vm.show
+      _vm.newsData && _vm.newsData.judul && _vm.show
         ? _c("div", { staticClass: "modal-backdrop fade show" })
         : _vm._e(),
       _vm._v(" "),
@@ -73499,7 +73679,7 @@ var render = function() {
           }
         },
         [
-          _vm.newsData && _vm.show
+          _vm.newsData && _vm.newsData.judul && _vm.show
             ? _c("div", { staticClass: "modal fade show d-block" }, [
                 _c(
                   "div",
@@ -77679,7 +77859,9 @@ var render = function() {
                     [
                       _c("div", { staticClass: "card-body" }, [
                         _c("h6", { staticClass: "text-secondary" }, [
-                          _vm._v("Dijawab oleh:")
+                          _vm._v(
+                            "\n                Dijawab oleh:\n              "
+                          )
                         ]),
                         _vm._v(" "),
                         _c(
@@ -77705,6 +77887,16 @@ var render = function() {
                                       _vm.momentJsBawah(replies.created_at)
                                     )
                                   )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "user-select-none" }, [
+                                _c("i", {
+                                  staticClass: "fas fa-thumbs-up text-secondary"
+                                }),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "text-secondary" }, [
+                                  _vm._v(" " + _vm._s(replies.likes_count))
                                 ])
                               ])
                             ]),
@@ -77771,7 +77963,34 @@ var render = function() {
                         )
                       ]),
                       _vm._v(" "),
-                      _vm._m(0, true)
+                      _vm.current_user &&
+                      _vm.current_user.role != "doctor" &&
+                      _vm.checkLike(replies.id)
+                        ? _c("div", { staticClass: "card-body border-top" }, [
+                            _c("div", { staticClass: "form-inline" }, [
+                              _vm._m(0, true),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-primary my-1 btn-sm",
+                                  attrs: { type: "submit" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.likeReplies(replies.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", {
+                                    staticClass: "fas fa-thumbs-up mr-1"
+                                  }),
+                                  _vm._v(" Ya\n                ")
+                                ]
+                              )
+                            ])
+                          ])
+                        : _vm._e()
                     ]
                   )
                 })
@@ -77802,26 +78021,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body border-top" }, [
-      _c("div", { staticClass: "form-inline" }, [
-        _c("div", { staticClass: "custom-control my-1 mr-sm-2 pl-0" }, [
-          _c("h5", { staticClass: "card-title mb-0" }, [
-            _vm._v(
-              "\n                    Apakah jawaban ini membantu?\n                  "
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary my-1 btn-sm",
-            attrs: { type: "submit" }
-          },
-          [
-            _c("i", { staticClass: "fas fa-thumbs-up mr-1" }),
-            _vm._v(" Ya\n                ")
-          ]
+    return _c("div", { staticClass: "custom-control my-1 mr-sm-2 pl-0" }, [
+      _c("h5", { staticClass: "card-title mb-0" }, [
+        _vm._v(
+          "\n                    Apakah jawaban ini membantu?\n                  "
         )
       ])
     ])
@@ -77856,20 +78059,80 @@ var render = function() {
           _vm._v("Daftar Dokter")
         ]),
         _vm._v(" "),
-         true
+        _vm.doctorData.data && _vm.doctorData.data.length > 0
           ? _c(
               "div",
               { staticClass: "row justify-content-center" },
-              _vm._l(6, function(n) {
-                return _c("div", { key: n, staticClass: "col-lg-10" }, [
+              _vm._l(_vm.doctorData.data, function(doctor) {
+                return _c("div", { key: doctor.id, staticClass: "col-lg-10" }, [
                   _c("div", { staticClass: "card mb-3" }, [
                     _c("div", { staticClass: "row no-gutters" }, [
-                      _vm._m(0, true),
+                      _c("div", { staticClass: "col-2" }, [
+                        _c("img", {
+                          staticClass: "card-img img-doctor img",
+                          attrs: {
+                            src: _vm.storage + "/" + doctor.user.avatar,
+                            alt: "profile"
+                          }
+                        })
+                      ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-10" }, [
                         _c("div", { staticClass: "card-body" }, [
                           _c("div", { staticClass: "row" }, [
-                            _vm._m(1, true),
+                            _c("div", { staticClass: "col-9" }, [
+                              _c(
+                                "h5",
+                                { staticClass: "card-title font-weight-bold" },
+                                [
+                                  _vm._v(
+                                    "\n                        dr. " +
+                                      _vm._s(
+                                        doctor.user.fullname
+                                          ? doctor.user.fullname
+                                          : doctor.user.name
+                                      ) +
+                                      "\n                      "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("table", [
+                                _c("tr", [
+                                  _vm._m(0, true),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(
+                                      _vm._s(
+                                        doctor.nama_klinik
+                                          ? doctor.nama_klinik
+                                          : "-"
+                                      )
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("tr", [
+                                  _vm._m(1, true),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(
+                                      _vm._s(
+                                        doctor.spesialis
+                                          ? "Spesialis " + doctor.spesialis
+                                          : "-"
+                                      )
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("tr", [
+                                  _vm._m(2, true),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(doctor.no_str))])
+                                ])
+                              ])
+                            ]),
                             _vm._v(" "),
                             _c(
                               "div",
@@ -77879,7 +78142,16 @@ var render = function() {
                                   _vm._v("Ulasan Dokter")
                                 ]),
                                 _vm._v(" "),
-                                _vm._m(2, true),
+                                _c("p", { staticClass: "user-select-none" }, [
+                                  _c("i", {
+                                    staticClass: "fas fa-thumbs-up text-primary"
+                                  }),
+                                  _vm._v(
+                                    " (" +
+                                      _vm._s(doctor.total_like) +
+                                      ")\n                      "
+                                  )
+                                ]),
                                 _vm._v(" "),
                                 _c(
                                   "a",
@@ -77887,7 +78159,7 @@ var render = function() {
                                     staticClass:
                                       "btn btn-outline-secondary btn-sm btn-block",
                                     attrs: {
-                                      href: _vm.home + "/doctor/" + n,
+                                      href: _vm.home + "/doctor/" + doctor.id,
                                       role: "button"
                                     }
                                   },
@@ -77904,10 +78176,22 @@ var render = function() {
               }),
               0
             )
-          : 0
+          : _c("div", { staticClass: "row justify-content-md-center mt-3" }, [
+              _vm._m(3)
+            ])
       ]),
       _vm._v(" "),
-      _vm._m(4)
+      _c(
+        "div",
+        { staticClass: "mt-5" },
+        [
+          _c("pagination", {
+            attrs: { data: _vm.doctorData, limit: 2, align: "center" },
+            on: { "pagination-change-page": _vm.getResults }
+          })
+        ],
+        1
+      )
     ])
   ])
 }
@@ -77916,57 +78200,19 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-2" }, [
-      _c("img", {
-        staticClass: "card-img img-doctor img",
-        attrs: {
-          src:
-            "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-          alt: "profile"
-        }
-      })
-    ])
+    return _c("td", [_c("i", { staticClass: "far fa-hospital-alt mr-2" })])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-9" }, [
-      _c("h5", { staticClass: "card-title font-weight-bold" }, [
-        _vm._v(
-          "\n                        dr. Kathleen Juanita Gunawan Soenario, Sp.OG\n                      "
-        )
-      ]),
-      _vm._v(" "),
-      _c("table", [
-        _c("tr", [
-          _c("td", [_c("i", { staticClass: "far fa-hospital-alt mr-2" })]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Siloam Hospitals Kebon Jeruk")])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("td", [_c("i", { staticClass: "far fa-stethoscope mr-2" })]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Spesialis kandungan")])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("td", [_c("i", { staticClass: "far fa-address-card mr-2" })]),
-          _vm._v(" "),
-          _c("td", [_vm._v("37645413232237")])
-        ])
-      ])
-    ])
+    return _c("td", [_c("i", { staticClass: "far fa-stethoscope mr-2" })])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "user-select-none" }, [
-      _c("i", { staticClass: "fas fa-thumbs-up text-primary" }),
-      _vm._v(" (120)\n                      ")
-    ])
+    return _c("td", [_c("i", { staticClass: "far fa-address-card mr-2" })])
   },
   function() {
     var _vm = this
@@ -77989,62 +78235,6 @@ var staticRenderFns = [
           ])
         ]
       )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c("ul", { staticClass: "pagination justify-content-center mt-4" }, [
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Previous" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("1")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("2")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("3")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#", "aria-label": "Next" }
-            },
-            [
-              _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
-              _vm._v(" "),
-              _c("span", { staticClass: "sr-only" }, [_vm._v("Next")])
-            ]
-          )
-        ])
-      ])
     ])
   }
 ]
@@ -78070,148 +78260,155 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "container" }, [
-        _c("div", { staticClass: "row justify-content-center" }, [
-          _c("div", { staticClass: "col-lg-10" }, [
-            _c("section", { staticClass: "mt-3" }, [
-              _c("div", { staticClass: "media" }, [
-                _c("img", {
-                  staticClass: "mr-3 img rounded-circle",
-                  attrs: {
-                    src:
-                      "https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1",
-                    alt: "Generic placeholder image"
-                  }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "media-body" }, [
+  return _c("div", [
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "col-lg-10" }, [
+          _c("section", { staticClass: "mt-3" }, [
+            _c("div", { staticClass: "media" }, [
+              _c("img", {
+                staticClass: "mr-3 img rounded-circle",
+                attrs: {
+                  src: _vm.storage + "/" + _vm.doctor.user.avatar,
+                  alt: "Generic placeholder image"
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "media-body" }, [
+                _c("h5", { staticClass: "card-title font-weight-bold mb-1" }, [
+                  _vm._v(
+                    "\n                dr. " +
+                      _vm._s(
+                        _vm.doctor.user.fullname
+                          ? _vm.doctor.user.fullname
+                          : _vm.doctor.user.name
+                      ) +
+                      "\n                "
+                  ),
                   _c(
-                    "h5",
-                    { staticClass: "card-title font-weight-bold mb-1" },
+                    "span",
+                    {
+                      staticClass:
+                        "float-right font-weight-normal h6 user-select-none"
+                    },
                     [
-                      _vm._v(
-                        "\n                dr. Kathleen Juanita Gunawan Soenario, Sp.OG\n                "
-                      ),
-                      _c(
-                        "span",
-                        {
-                          staticClass:
-                            "float-right font-weight-normal h6 user-select-none"
-                        },
-                        [
-                          _c("i", {
-                            staticClass: "fas fa-thumbs-up text-primary"
-                          }),
-                          _vm._v(" (120) ")
-                        ]
-                      )
+                      _c("i", { staticClass: "fas fa-thumbs-up text-primary" }),
+                      _vm._v(" (" + _vm._s(_vm.doctor.total_like) + ") ")
                     ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "h5",
-                    {
-                      staticClass:
-                        "card-title font-weight-bold text-secondary mb-1"
-                    },
-                    [_vm._v("Spesialis kandungan")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "h6",
-                    {
-                      staticClass:
-                        "card-title font-weight-bold text-secondary mb-0"
-                    },
-                    [_vm._v("3645413232237")]
                   )
-                ])
-              ]),
-              _vm._v(" "),
-              _c("hr"),
-              _vm._v(" "),
-              _c("div", { staticClass: "detail-dokter" }, [
-                _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
-                  _vm._v("Profile Dokter")
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "profile-content text-justify" }, [
-                  _c("p", [
+                _c(
+                  "h5",
+                  {
+                    staticClass:
+                      "card-title font-weight-bold text-secondary mb-1"
+                  },
+                  [
                     _vm._v(
-                      "dr. Kathleen Juanita Gunawan Soenario, Sp.OG adalah seorang Dokter Spesialis Kebidanan dan Kandungan. Beliau menamatkan pendidikan Spesialis Obstetri dan Ginekologi di Fakultas Kedokteran, Universitas Diponegoro. Saat ini, dr. Kathleen Juanita berpraktek di Siloam Hospitals Kebon Jeruk, RS Bina Sehat Mandiri, dan RS Satya Negara sebagai Dokter Kandungan."
+                      _vm._s(
+                        _vm.doctor.spesialis
+                          ? "Spesialis " + _vm.doctor.spesialis
+                          : "-"
+                      )
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "h6",
+                  {
+                    staticClass:
+                      "card-title font-weight-bold text-secondary mb-0"
+                  },
+                  [_vm._v(_vm._s(_vm.doctor.no_str))]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c("div", { staticClass: "detail-dokter" }, [
+              _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
+                _vm._v("Profile Dokter")
+              ]),
+              _vm._v(" "),
+              _vm.doctor.deskripsi
+                ? _c("div", {
+                    staticClass: "profile-content",
+                    domProps: { innerHTML: _vm._s(_vm.doctor.deskripsi) }
+                  })
+                : _c("div", { staticClass: "profile-content" }, [_vm._v("-")])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "detail-dokter" }, [
+              _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
+                _vm._v(
+                  "Lokasi - " +
+                    _vm._s(_vm.doctor.nama_klinik ? _vm.doctor.nama_klinik : "")
+                )
+              ]),
+              _vm._v(" "),
+              _vm.doctor.lokasi
+                ? _c("div", {
+                    staticClass: "maps-doctor",
+                    domProps: { innerHTML: _vm._s(_vm.doctor.lokasi) }
+                  })
+                : _c("div", { staticClass: "maps-doctor" }, [_vm._v("-")])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "detail-dokter" }, [
+              _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
+                _vm._v("Pengalaman Praktik")
+              ]),
+              _vm._v(" "),
+              _vm.doctor.pengalaman_praktik
+                ? _c("div", { staticClass: "card" }, [
+                    _c(
+                      "ul",
+                      { staticClass: "list-group list-group-flush" },
+                      _vm._l(_vm.doctor.pengalaman_praktik.split(","), function(
+                        pengalaman
+                      ) {
+                        return _c("li", { staticClass: "list-group-item" }, [
+                          _vm._v(_vm._s(pengalaman))
+                        ])
+                      }),
+                      0
                     )
                   ])
-                ])
+                : _c("div", [_vm._v("-")])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "detail-dokter" }, [
+              _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
+                _vm._v("Riwayat Pendidikan")
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "detail-dokter" }, [
-                _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
-                  _vm._v("Lokasi - Siloam Hospitals Kebon Jeruk")
-                ]),
-                _vm._v(" "),
-                _c("iframe", {
-                  staticStyle: { border: "0" },
-                  attrs: {
-                    src:
-                      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1704.5680577496535!2d115.18816135880937!3d-8.641001521903005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23fff77872345%3A0x4613532438b18a2b!2sTyo%20house!5e0!3m2!1sen!2sid!4v1617969409016!5m2!1sen!2sid",
-                    width: "600",
-                    height: "450",
-                    allowfullscreen: "",
-                    loading: "lazy"
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "detail-dokter" }, [
-                _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
-                  _vm._v("Pengalaman Praktik")
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card" }, [
-                  _c("ul", { staticClass: "list-group list-group-flush" }, [
-                    _c("li", { staticClass: "list-group-item" }, [
-                      _vm._v(
-                        "Dokter Kebidanan dan Kandungan - Siloam Hospitals Kebon Jeruk"
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("li", { staticClass: "list-group-item" }, [
-                      _vm._v("Dokter Kebidanan dan Kandungan - RS Satya Negara")
-                    ])
+              _vm.doctor.riwayat_pendidikan
+                ? _c("div", { staticClass: "card" }, [
+                    _c(
+                      "ul",
+                      { staticClass: "list-group list-group-flush" },
+                      _vm._l(_vm.doctor.riwayat_pendidikan.split(","), function(
+                        riwayat
+                      ) {
+                        return _c("li", { staticClass: "list-group-item" }, [
+                          _vm._v(_vm._s(riwayat))
+                        ])
+                      }),
+                      0
+                    )
                   ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "detail-dokter" }, [
-                _c("h6", { staticClass: "h5 mb-2 font-weight-bold" }, [
-                  _vm._v("Riwayat Pendidikan")
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card" }, [
-                  _c("ul", { staticClass: "list-group list-group-flush" }, [
-                    _c("li", { staticClass: "list-group-item" }, [
-                      _vm._v(
-                        "Sp.OG - Spesialis Obstetri dan Ginekologi - Universitas Diponegoro"
-                      )
-                    ])
-                  ])
-                ])
-              ])
+                : _c("div", [_vm._v("-")])
             ])
           ])
         ])
       ])
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -78235,7 +78432,460 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._m(0),
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "col-lg-10" }, [
+          _c("section", { staticClass: "mt-3 mb-4" }, [
+            _c("h2", { staticClass: "text-center h4 mb-4" }, [
+              _vm._v("Profil Dokter")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card shadow" }, [
+              _c("div", { staticClass: "card-body" }, [
+                _c("div", { staticClass: "form-row" }, [
+                  _c("div", { staticClass: "form-group col-md-6" }, [
+                    _c("label", [_vm._v("Nomor STR")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        placeholder: _vm.user.no_str,
+                        readonly: ""
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group col-md-6" }, [
+                    _c("label", [_vm._v("Spesialis")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.update_data.spesialis,
+                          expression: "update_data.spesialis"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: [_vm.errors.spesialis ? "is-invalid" : ""],
+                      attrs: { required: "", type: "text" },
+                      domProps: { value: _vm.update_data.spesialis },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.update_data,
+                            "spesialis",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errors.spesialis
+                      ? _c("small", { staticClass: "text-danger" }, [
+                          _vm._v(
+                            "\n                    " +
+                              _vm._s(_vm.errors.spesialis[0]) +
+                              "\n                  "
+                          )
+                        ])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", [_vm._v("Deskripsi")]),
+                    _vm._v(" "),
+                    _c("wysiwyg", {
+                      model: {
+                        value: _vm.update_data.deskripsi,
+                        callback: function($$v) {
+                          _vm.$set(_vm.update_data, "deskripsi", $$v)
+                        },
+                        expression: "update_data.deskripsi"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errors.deskripsi
+                      ? _c("small", { staticClass: "text-danger" }, [
+                          _vm._v(
+                            "\n                  " +
+                              _vm._s(_vm.errors.deskripsi[0]) +
+                              "\n                "
+                          )
+                        ])
+                      : _vm._e()
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", [_vm._v("Nama Klinik")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.update_data.nama_klinik,
+                        expression: "update_data.nama_klinik"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: [_vm.errors.nama_klinik ? "is-invalid" : ""],
+                    attrs: { required: "", type: "text" },
+                    domProps: { value: _vm.update_data.nama_klinik },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.update_data,
+                          "nama_klinik",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.nama_klinik
+                    ? _c("small", { staticClass: "text-danger" }, [
+                        _vm._v(
+                          "\n                  " +
+                            _vm._s(_vm.errors.nama_klinik[0]) +
+                            "\n                "
+                        )
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.update_data.lokasi,
+                        expression: "update_data.lokasi"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: [_vm.errors.lokasi ? "is-invalid" : ""],
+                    attrs: { required: "", rows: "1" },
+                    domProps: { value: _vm.update_data.lokasi },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.update_data, "lokasi", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.lokasi
+                    ? _c("small", { staticClass: "text-danger" }, [
+                        _vm._v(
+                          "\n                  " +
+                            _vm._s(_vm.errors.lokasi[0]) +
+                            "\n                "
+                        )
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", [_vm._v("Pengalaman Praktik")]),
+                    _vm._v(" "),
+                    _vm._l(_vm.update_data.pengalaman_praktik, function(
+                      pengalaman,
+                      index
+                    ) {
+                      return _c(
+                        "div",
+                        { key: index, staticClass: "controls-praktik" },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "entry-praktik input-group mb-2" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: pengalaman.value,
+                                    expression: "pengalaman.value"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: [
+                                  _vm.errors.pengalaman_praktik
+                                    ? "is-invalid"
+                                    : ""
+                                ],
+                                attrs: { required: "", type: "text" },
+                                domProps: { value: pengalaman.value },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      pengalaman,
+                                      "value",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              index + 1 ==
+                              _vm.update_data.pengalaman_praktik.length
+                                ? _c(
+                                    "div",
+                                    { staticClass: "input-group-append" },
+                                    [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "btn btn-outline-secondary btn-add-praktik",
+                                          attrs: { type: "button" },
+                                          on: { click: _vm.addPengalaman }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "far fa-plus"
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                : _c(
+                                    "div",
+                                    { staticClass: "input-group-append" },
+                                    [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "btn btn-outline-danger btn-remove-praktik",
+                                          attrs: { type: "button" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.deletePengalaman(index)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "far fa-minus"
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm.errors.pengalaman_praktik
+                            ? _c("small", { staticClass: "text-danger" }, [
+                                _vm._v(
+                                  "\n                    " +
+                                    _vm._s(_vm.errors.pengalaman_praktik[0]) +
+                                    "\n                  "
+                                )
+                              ])
+                            : _vm._e()
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", [_vm._v("Riwayat Pendidikan")]),
+                    _vm._v(" "),
+                    _vm._l(_vm.update_data.riwayat_pendidikan, function(
+                      item,
+                      index
+                    ) {
+                      return _c(
+                        "div",
+                        { key: index, staticClass: "controls-riwayat" },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "entry-riwayat input-group mb-2" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: item.value,
+                                    expression: "item.value"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: [
+                                  _vm.errors.riwayat_pendidikan
+                                    ? "is-invalid"
+                                    : ""
+                                ],
+                                attrs: {
+                                  required: "",
+                                  type: "text",
+                                  name: "fields[]"
+                                },
+                                domProps: { value: item.value },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(item, "value", $event.target.value)
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              index + 1 ==
+                              _vm.update_data.riwayat_pendidikan.length
+                                ? _c(
+                                    "div",
+                                    { staticClass: "input-group-append" },
+                                    [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "btn btn-outline-secondary btn-add-praktik",
+                                          attrs: { type: "button" },
+                                          on: { click: _vm.addPendidikan }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "far fa-plus"
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                : _c(
+                                    "div",
+                                    { staticClass: "input-group-append" },
+                                    [
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "btn btn-outline-danger btn-remove-praktik",
+                                          attrs: { type: "button" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.deletePendidikan(index)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "far fa-minus"
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm.errors.riwayat_pendidikan
+                            ? _c("small", { staticClass: "text-danger" }, [
+                                _vm._v(
+                                  "\n                    " +
+                                    _vm._s(_vm.errors.riwayat_pendidikan[0]) +
+                                    "\n                  "
+                                )
+                              ])
+                            : _vm._e()
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-row" }, [
+                  _c("div", { staticClass: "form-group col-md-6 col-sm-12" }, [
+                    _c("label", { staticClass: "d-block" }, [
+                      _vm._v("Sertifikat")
+                    ]),
+                    _vm._v(" "),
+                    _c("img", {
+                      staticClass:
+                        "img-fluid w-100 rounded obj-fit-cover img-thumbnail img-doctor-letter",
+                      staticStyle: { height: "30vh" },
+                      attrs: {
+                        alt: "animal",
+                        src: _vm.storage + "/" + _vm.user.sertif,
+                        "data-toggle": "modal",
+                        "data-target": "#modal-sertif"
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group col-md-6 col-sm-12" }, [
+                    _c("label", { staticClass: "d-block" }, [
+                      _vm._v("Surat Izin")
+                    ]),
+                    _vm._v(" "),
+                    _c("img", {
+                      staticClass:
+                        "img-fluid w-100 rounded obj-fit-cover img-thumbnail img-doctor-letter",
+                      staticStyle: { height: "30vh" },
+                      attrs: {
+                        alt: "animal",
+                        src: _vm.storage + "/" + _vm.user.surat_izin,
+                        "data-toggle": "modal",
+                        "data-target": "#modal-surat-izin"
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary btn-block",
+                    attrs: { type: "submit" },
+                    on: { click: _vm.updateProfile }
+                  },
+                  [_vm._v("Simpan")]
+                )
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _vm._m(1),
     _vm._v(" "),
@@ -78259,7 +78909,12 @@ var render = function() {
               "div",
               { staticClass: "modal-content" },
               [
-                _vm._m(2),
+                _c("div", { staticClass: "modal-body p-0" }, [
+                  _c("img", {
+                    staticStyle: { width: "100%" },
+                    attrs: { src: _vm.storage + "/" + _vm.user.sertif, alt: "" }
+                  })
+                ]),
                 _vm._v(" "),
                 _c("center", { staticClass: "p-2" }, [
                   _c(
@@ -78299,7 +78954,15 @@ var render = function() {
               "div",
               { staticClass: "modal-content" },
               [
-                _vm._m(3),
+                _c("div", { staticClass: "modal-body p-0" }, [
+                  _c("img", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      src: _vm.storage + "/" + _vm.user.surat_izin,
+                      alt: ""
+                    }
+                  })
+                ]),
                 _vm._v(" "),
                 _c("center", { staticClass: "p-2" }, [
                   _c(
@@ -78325,195 +78988,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-lg-10" }, [
-          _c("section", { staticClass: "mt-3 mb-4" }, [
-            _c("h2", { staticClass: "text-center h4 mb-4" }, [
-              _vm._v("Profil Dokter")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card shadow" }, [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "form-row" }, [
-                  _c("div", { staticClass: "form-group col-md-6" }, [
-                    _c("label", [_vm._v("Nomor STR")]),
-                    _vm._v(" "),
-                    _c("input", {
-                      staticClass: "form-control",
-                      attrs: {
-                        type: "text",
-                        placeholder: "763724572939843",
-                        readonly: ""
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group col-md-6" }, [
-                    _c("label", [_vm._v("Spesialis")]),
-                    _vm._v(" "),
-                    _c("input", {
-                      staticClass: "form-control",
-                      attrs: { type: "text", required: "" }
-                    })
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", [_vm._v("Deskripsi")]),
-                  _vm._v(" "),
-                  _c("textarea", {
-                    staticClass: "form-control",
-                    attrs: { rows: "2", required: "" }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", [_vm._v("Nama Klinik")]),
-                  _vm._v(" "),
-                  _c("input", {
-                    staticClass: "form-control",
-                    attrs: { type: "text", required: "" }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", [
-                    _vm._v("\n                  Lokasi Klinik "),
-                    _c("i", {
-                      staticClass: "far fa-info-circle hover-pointer",
-                      attrs: {
-                        "data-toggle": "modal",
-                        "data-target": "#staticBackdrop"
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("textarea", {
-                    staticClass: "form-control",
-                    attrs: { rows: "1", required: "" }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", [_vm._v("Pengalaman Praktik")]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "controls-praktik" }, [
-                    _c(
-                      "div",
-                      { staticClass: "entry-praktik input-group mb-2" },
-                      [
-                        _c("input", {
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            name: "fields[]",
-                            required: ""
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "input-group-append" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass:
-                                "btn btn-outline-secondary btn-add-praktik",
-                              attrs: { type: "button" }
-                            },
-                            [_c("i", { staticClass: "far fa-plus" })]
-                          )
-                        ])
-                      ]
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", [_vm._v("Riwayat Pendidikan")]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "controls-riwayat" }, [
-                    _c(
-                      "div",
-                      { staticClass: "entry-riwayat input-group mb-2" },
-                      [
-                        _c("input", {
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            name: "fields[]",
-                            required: ""
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "input-group-append" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass:
-                                "btn btn-outline-secondary btn-add-riwayat",
-                              attrs: { type: "button" }
-                            },
-                            [_c("i", { staticClass: "far fa-plus" })]
-                          )
-                        ])
-                      ]
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-row" }, [
-                  _c("div", { staticClass: "form-group col-md-6 col-sm-12" }, [
-                    _c("label", { staticClass: "d-block" }, [
-                      _vm._v("Sertifikat")
-                    ]),
-                    _vm._v(" "),
-                    _c("img", {
-                      staticClass:
-                        "img-fluid w-100 rounded obj-fit-cover img-thumbnail img-doctor-letter",
-                      staticStyle: { height: "30vh" },
-                      attrs: {
-                        alt: "animal",
-                        src:
-                          "https://i1.wp.com/hewanpedia.com/wp-content/uploads/2020/12/Berang-berang-di-Sawah.jpg?resize=1280%2C640&ssl=1",
-                        "data-toggle": "modal",
-                        "data-target": "#modal-sertif"
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group col-md-6 col-sm-12" }, [
-                    _c("label", { staticClass: "d-block" }, [
-                      _vm._v("Surat Izin")
-                    ]),
-                    _vm._v(" "),
-                    _c("img", {
-                      staticClass:
-                        "img-fluid w-100 rounded obj-fit-cover img-thumbnail img-doctor-letter",
-                      staticStyle: { height: "30vh" },
-                      attrs: {
-                        alt: "animal",
-                        src:
-                          "https://i2.wp.com/hewanpedia.com/wp-content/uploads/2017/11/Foto-Ubur-ubur.jpeg?resize=1080%2C608&ssl=1",
-                        "data-toggle": "modal",
-                        "data-target": "#modal-surat-izin"
-                      }
-                    })
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary btn-block",
-                    attrs: { type: "submit" }
-                  },
-                  [_vm._v("Simpan")]
-                )
-              ])
-            ])
-          ])
-        ])
-      ])
+    return _c("label", [
+      _vm._v("\n                  Lokasi Klinik "),
+      _c("i", {
+        staticClass: "far fa-info-circle hover-pointer",
+        attrs: { "data-toggle": "modal", "data-target": "#staticBackdrop" }
+      })
     ])
   },
   function() {
@@ -78600,36 +79080,6 @@ var staticRenderFns = [
         ])
       ]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-body p-0" }, [
-      _c("img", {
-        staticStyle: { width: "100%" },
-        attrs: {
-          src:
-            "https://i1.wp.com/hewanpedia.com/wp-content/uploads/2020/12/Berang-berang-di-Sawah.jpg?resize=1280%2C640&ssl=1",
-          alt: ""
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-body p-0" }, [
-      _c("img", {
-        staticStyle: { width: "100%" },
-        attrs: {
-          src:
-            "https://i2.wp.com/hewanpedia.com/wp-content/uploads/2017/11/Foto-Ubur-ubur.jpeg?resize=1080%2C608&ssl=1",
-          alt: ""
-        }
-      })
-    ])
   }
 ]
 render._withStripped = true

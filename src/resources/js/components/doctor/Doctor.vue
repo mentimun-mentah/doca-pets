@@ -3,13 +3,13 @@
     <div class="container">
       <section class="mt-3">
         <h2 class="text-center h3 mb-3">Daftar Dokter</h2>
-        <div class="row justify-content-center" v-if="1 == 1">
-          <div class="col-lg-10" v-for="n in 6" :key="n">
+        <div class="row justify-content-center" v-if="doctorData.data && doctorData.data.length > 0">
+          <div class="col-lg-10" v-for="doctor in doctorData.data" :key="doctor.id">
             <div class="card mb-3">
               <div class="row no-gutters">
                 <div class="col-2">
                   <img
-                    src="https://i0.wp.com/hewanpedia.com/wp-content/uploads/2021/02/Mimpi-Iguana.jpg?resize=400%2C250&ssl=1"
+                    :src="storage + '/' + doctor.user.avatar"
                     class="card-img img-doctor img"
                     alt="profile"
                   />
@@ -19,20 +19,20 @@
                     <div class="row">
                       <div class="col-9">
                         <h5 class="card-title font-weight-bold">
-                          dr. Kathleen Juanita Gunawan Soenario, Sp.OG
+                          dr. {{doctor.user.fullname ? doctor.user.fullname : doctor.user.name}}
                         </h5>
                         <table>
                           <tr>
                             <td><i class="far fa-hospital-alt mr-2"></i></td>
-                            <td>Siloam Hospitals Kebon Jeruk</td>
+                            <td>{{doctor.nama_klinik ? doctor.nama_klinik : '-'}}</td>
                           </tr>
                           <tr>
                             <td><i class="far fa-stethoscope mr-2"></i></td>
-                            <td>Spesialis kandungan</td>
+                            <td>{{doctor.spesialis ? 'Spesialis ' + doctor.spesialis : '-'}}</td>
                           </tr>
                           <tr>
                             <td><i class="far fa-address-card mr-2"></i></td>
-                            <td>37645413232237</td>
+                            <td>{{doctor.no_str}}</td>
                           </tr>
                         </table>
                       </div>
@@ -40,11 +40,11 @@
                       <div class="col-3 border-left text-center">
                         <h6 class="font-weight-bold">Ulasan Dokter</h6>
                         <p class="user-select-none">
-                          <i class="fas fa-thumbs-up text-primary"></i> (120)
+                        <i class="fas fa-thumbs-up text-primary"></i> ({{doctor.total_like}})
                         </p>
                         <a
                           class="btn btn-outline-secondary btn-sm btn-block"
-                          :href="home + '/doctor/' + n"
+                          :href="home + '/doctor/' + doctor.id"
                           role="button"
                           >Detail</a
                         >
@@ -72,25 +72,14 @@
         </div><!-- /row -->
       </section>
 
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <div class="mt-5">
+        <pagination
+          :data="doctorData"
+          :limit="2"
+          :align="'center'"
+          @pagination-change-page="getResults"
+        ></pagination>
+      </div><!--/row-->
     </div>
     <!-- /container -->
   </div>
@@ -98,7 +87,23 @@
 
 <script>
 export default {
-  props: ["home"]
+  props: ["home","storage"],
+  data(){
+    return{
+      url: '/doctor/all-doctor',
+      doctorData: {}
+    }
+  },
+  methods:{
+    getResults(page = 1) {
+      axios.get(`${this.url}?page=${page}`).then(res => {
+        this.doctorData = res.data;
+      });
+    },
+  },
+  mounted() {
+    this.getResults();
+  }
 };
 </script>
 <style>
@@ -109,5 +114,6 @@ export default {
   margin-right: 19px;
   margin-left: 19px;
   margin-top: 19px;
+  object-fit: cover;
 }
 </style>

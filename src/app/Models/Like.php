@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Replies extends Model
+class Like extends Model
 {
   use HasFactory;
 
@@ -14,18 +14,14 @@ class Replies extends Model
    *
    * @var array
    */
-    protected $fillable = ['balasan','comment_id','user_id'];
-
-    public function comment(){
-        return $this->belongsTo('App\Models\Comment');
-    }
+    protected $fillable = ['replies_id','user_id'];
 
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
 
-    public function likes()
-    {
-        return $this->hasMany("App\Models\Like");
+    public function reply(){
+        return $this->belongsTo('App\Models\Replies');
     }
+
 }

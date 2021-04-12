@@ -232,12 +232,14 @@
                   >
                     Akun
                   </a>
+                  @if(Auth::user()->role == 'doctor')
                   <a
                     class="dropdown-item"
                     href="{{url('/doctor/profile')}}"
                   >
                     Profile Dokter
                   </a>
+                  @endif
                   <a
                     class="dropdown-item"
                     href="{{ route('logout') }}"
