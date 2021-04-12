@@ -1,10 +1,11 @@
 #!/bin/bash
-mv src/storage/logo.png src/storage/app/public/
 mkdir src/storage/app/public/avatar
 mkdir src/storage/app/public/doctor
 mkdir src/storage/app/public/news
 mkdir src/storage/app/public/pet
 mkdir src/storage/app/public/treat
+mv src/storage/logo.png src/storage/app/public/
+mv src/storage/default.png src/storage/app/public/avatar/
 
 docker-compose up -d --build
 bash cmd.sh composer install
