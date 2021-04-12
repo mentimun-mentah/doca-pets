@@ -41,7 +41,7 @@ class RepliesController extends Controller
         'user_id' => Auth::user()->id
       ]);
 
-      $doctor = Doctor::findOrFail($replies->user_id);
+      $doctor = Doctor::where('user_id',$replies->user_id)->firstOrFail();
       $doctor->total_like = $doctor->total_like + 1;
       $doctor->save();
 
