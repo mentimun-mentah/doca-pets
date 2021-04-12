@@ -4,7 +4,7 @@
       <h2 class="text-center h2 mb-4">Cara merawat hewan</h2>
 
       <div class="row" v-if="treatData.data && treatData.data.length > 0">
-        <div v-for="(item,index) in treatData.data" :key="item.id">
+        <div class="w-100" v-for="(item,index) in treatData.data" :key="item.id">
 
           <div class="card border-0 shadow-sm mt-4" v-if="index % 2 == 0">
             <div class="row align-items-center">
