@@ -1,4 +1,5 @@
 #!/bin/bash
+mv src/storage/logo.png src/storage/app/public/
 mkdir src/storage/app/public/avatar
 mkdir src/storage/app/public/doctor
 mkdir src/storage/app/public/news
@@ -10,8 +11,9 @@ bash cmd.sh composer install
 bash cmd.sh artisan key:generate
 bash cmd.sh artisan cache:clear 
 bash cmd.sh artisan config:clear
-bash cmd.sh artisan migrate:fresh
 bash cmd.sh npm install
 bash cmd.sh npm run production
 docker-compose stop
 docker-compose up -d
+bash cmd.sh artisan migrate:fresh
+bash cmd.sh artisan storage:link
