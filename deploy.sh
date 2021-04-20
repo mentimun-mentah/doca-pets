@@ -8,7 +8,7 @@ mv src/storage/logo.png src/storage/app/public/
 mv src/storage/default.png src/storage/app/public/avatar/
 
 docker-compose up -d --build
-bash cmd.sh composer install
+bash cmd.sh composer update
 bash cmd.sh artisan key:generate
 bash cmd.sh artisan cache:clear 
 bash cmd.sh artisan config:clear

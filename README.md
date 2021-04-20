@@ -1,3 +1,3 @@
 ## Installation
 
-* bash init.sh
+* bash deploy.sh
