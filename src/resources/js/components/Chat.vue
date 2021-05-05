@@ -59,12 +59,20 @@
                   enter-active-class="animate__animated animate__fadeInUp animate__faster"
                   tag="div"
                 >
-                  <div v-for="message in messagesUsers" :key="message.id">
+                  <div v-for="(message, index) in messagesUsers" :key="message.id">
+                    <div class="w-100 text-center mb-2" v-if="setDate(index) != false">
+                      <p style="font-size: 16px;">
+                        <span class="badge bg-light text-secondary">
+                          {{setDate(index)}}
+                        </span>
+                      </p>
+                    </div>
+
                     <div
                       class="chat-message-right mb-4"
                       v-if="current_user.id == message.user_id"
                     >
-                      <div>
+                      <div class="text-right">
                         <img
                           :src="storage + '/' + message.user.avatar"
                           class="rounded-circle mr-1"
@@ -72,12 +80,12 @@
                           width="40"
                           height="40"
                         />
-                        <div class="text-muted small text-nowrap mt-2">
+                        <p class="text-muted small text-nowrap mt-2 mb-0">
                           {{ momentJs(message.created_at) }}
-                        </div>
+                        </p>
                       </div>
                       <div
-                        class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3"
+                        class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3 h-fit-content"
                       >
                         <div class="font-weight-bold mb-1">
                           You
@@ -95,12 +103,12 @@
                           width="40"
                           height="40"
                         />
-                        <div class="text-muted small text-nowrap mt-2">
+                        <p class="text-muted small text-nowrap mt-2 mb-0">
                           {{ momentJs(message.created_at) }}
-                        </div>
+                        </p>
                       </div>
                       <div
-                        class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3"
+                        class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3 h-fit-content"
                       >
                         <div class="font-weight-bold mb-1">
                           {{ message.user.name }}
@@ -148,7 +156,8 @@ export default {
       messagesUsers: [],
       message: "",
       show: true,
-      soundurl: "https://soundbible.com/mp3/Music_Box-Big_Daddy-1389738694.mp3"
+      soundurl: "https://soundbible.com/mp3/Music_Box-Big_Daddy-1389738694.mp3",
+      datemessage: []
     };
   },
   mounted() {
@@ -178,6 +187,24 @@ export default {
     });
   },
   methods: {
+    setDate(index){
+      try{
+        if(index == 0){
+          return moment(this.messagesUsers[index].created_at).isSame(moment(),'day') 
+            ? 'Today'
+            : moment(this.messagesUsers[index].created_at).format('LL')
+        }else{
+          if(!moment(this.messagesUsers[index].created_at).isSame(moment(this.messagesUsers[index - 1].created_at),'day')){
+            return moment(this.messagesUsers[index].created_at).isSame(moment(),'day')
+              ? 'Today'
+              : moment(this.messagesUsers[index].created_at).format('LL')
+          }
+        }
+
+      } catch(err) {}
+
+      return false
+    },
     fetchMessages() {
       axios.get("/messages").then(response => {
         this.messagesUsers = response.data;
@@ -267,5 +294,9 @@ export default {
 .list-group-item-action:focus {
   background-color: white;
   cursor: default;
+}
+
+.h-fit-content {
+  height: fit-content;
 }
 </style>

@@ -18,6 +18,7 @@ class CreateNewsTable extends Migration
             $table->string('judul')->unique();
             $table->string('slug')->unique();
             $table->string('photo');
+            $table->text('lokasi');
             $table->text('deskripsi');
             $table->timestamps();
         });

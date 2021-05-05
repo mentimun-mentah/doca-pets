@@ -95,9 +95,13 @@
                 class="img-fluid w-100"
                 alt="img-animal"
               />
-              <h6 class="my-3 font-weight-bold"><u>Deskripsi</u></h6>
+              <h6 class="h5 my-3 font-weight-bold">Deskripsi</h6>
               <div class="deskripsi" v-html="newsData.deskripsi">
               </div>
+
+
+              <h6 class="h5 my-3 font-weight-bold">Lokasi Terakhir</h6>
+              <div class="maps-doctor" v-html="newsData.lokasi"></div>
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ class NewsController extends Controller
           'judul' => 'required|string|min:3|max:255|unique:news',
           'photo' => 'required|mimes:jpg,jpeg,png|max:2000',
           'deskripsi' => 'required|string|min:5',
+          'lokasi' => 'required|regex:/<iframe\s*src="https:\/\/www\.google\.com\/maps\/embed\?[^"]+"*\s*[^>]+>*<\/iframe>/',
         ]);
 
       # save image to storage
@@ -30,6 +31,7 @@ class NewsController extends Controller
         'slug' => Str::slug($request->judul,'-'),
         'photo' => $photoName,
         'deskripsi' => $request->deskripsi,
+        'lokasi' => $request->lokasi
       ]);
 
       return ['status' => 'Success create news'];
@@ -49,10 +51,12 @@ class NewsController extends Controller
         'judul' => 'required|string|min:3|max:255|unique:news,judul,'.$news->id,
         'photo' => 'nullable|mimes:jpg,jpeg,png|max:2000',
         'deskripsi' => 'required|string|min:5',
+        'lokasi' => 'required|regex:/<iframe\s*src="https:\/\/www\.google\.com\/maps\/embed\?[^"]+"*\s*[^>]+>*<\/iframe>/',
       ]);
 
       $news->judul = $request->judul;
       $news->deskripsi = $request->deskripsi;
+      $news->lokasi = $request->lokasi;
       $news->save();
 
       # update image

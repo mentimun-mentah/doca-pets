@@ -99,6 +99,25 @@
                   </small>
                 </div>
                 <!--/form-group-->
+                
+                <div class="form-group">
+                  <label>
+                    Lokasi Terakhir
+                    <i class="far fa-info-circle hover-pointer" data-toggle="modal" data-target="#staticBackdrop"></i>
+                  </label>
+                  <textarea 
+                    required
+                    placeholder="Enter text..."
+                    rows="1" 
+                    class="form-control" 
+                    v-model="create_data.lokasi" 
+                    :class="[errors.lokasi ? 'is-invalid' : '']"
+                  >
+                  </textarea>
+                  <small class="text-danger" v-if="errors.lokasi">
+                    {{ errors.lokasi[0] }}
+                  </small>
+                </div>
 
                 <div class="form-group">
                   <label>Deskripsi Berita</label>
@@ -128,6 +147,52 @@
       <!-- /header-body -->
     </div>
     <!-- /container-fluid -->
+
+    <!-- Modal Lokasi -->
+    <div
+      class="modal fade"
+      id="staticBackdrop"
+      data-backdrop="static"
+      data-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Cara menambahkan lokasi</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ol>
+              <li>
+                Buka halaman
+                <a target="_blank" href="https://maps.google.com/">
+                  Google Maps
+                </a>
+                dan cari lokasi terakhir hewan.
+              </li>
+              <li>Klik share/bagikan pada bagian disebelah kiri detail informasi tempat lokasi.</li>
+              <li>Pilih Embed a map/Sematkan peta.</li>
+              <li>Klik Copy HTML/Salin HTML.</li>
+              <li>Lalu paste/tempel pada form Lokasi Terakhir.</li>
+            </ol>
+          </div><!-- /modal-body-->
+        </div>
+      </div>
+    </div>
+    <!-- Modal Lokasi -->
+    
   </div>
 </template>
 
@@ -139,7 +204,8 @@ export default {
       create_data: {
         judul: "",
         photo: null,
-        deskripsi: ""
+        deskripsi: "",
+        lokasi: null
       },
       errors: []
     };
@@ -154,6 +220,7 @@ export default {
       formData.append("judul", this.create_data.judul);
       formData.append("photo", this.create_data.photo);
       formData.append("deskripsi", this.create_data.deskripsi);
+      formData.append("lokasi", this.create_data.lokasi);
 
       const config = {
         headers: { "content-type": "multipart/form-data" }
@@ -166,6 +233,7 @@ export default {
           this.create_data.judul = ""
           this.create_data.photo = null
           this.create_data.deskripsi = ""
+          this.create_data.lokasi = null
       }).catch(err => {
           this.errors = err.response.data.errors;
       })
