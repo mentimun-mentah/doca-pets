@@ -1,4 +1,4 @@
-## Installation
+## Development
 
 * bash init.sh
 
