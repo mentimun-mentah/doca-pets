@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: nginx.dockerfile
+    restart: always
     ports:
       - "8080:80"
     volumes:
@@ -14,7 +15,7 @@ services:
 
   mysql:
     image: mysql:5.7.21
-    restart: unless-stopped
+    restart: always
     tty: true
     ports:
       - "3306:3306"
@@ -29,6 +30,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    restart: always
     depends_on:
       - mysql
     ports:
@@ -40,6 +42,7 @@ services:
     build:
       context: .
       dockerfile: php.dockerfile
+    restart: always
     volumes:
       - ./src:/var/www/html:delegated
     command: ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
