@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\NewsController::class, 'index'])->name('news');
 
 Auth::routes();
+
+Route::get('/kind-pet', [App\Http\Controllers\PetsController::class, 'index'])->name('pet');
 
 Route::get('/verify/{token}/{id}', [App\Http\Controllers\Auth\RegisterController::class,'verify']);
 Route::post('/register/doctor', [App\Http\Controllers\Auth\RegisterController::class,'registerDoctor']);
@@ -33,8 +33,6 @@ Route::put('/account/password', [App\Http\Controllers\AccountController::class, 
 
 Route::get('/treat', [App\Http\Controllers\TreatController::class, 'index'])->name('treat');
 Route::get('/treat/{slug}', [App\Http\Controllers\TreatController::class, 'show'])->name('treat');
-
-Route::get('/news', [App\Http\Controllers\NewsController::class, 'index'])->name('news');
 
 Route::get('/pet/{slug}', [App\Http\Controllers\PetsController::class, 'show'])->name('pet');
 

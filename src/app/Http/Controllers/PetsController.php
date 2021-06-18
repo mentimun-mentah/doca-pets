@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class PetsController extends Controller
 {
+
+    public function index(){
+      return view('welcome');
+    }
+
     public function show($slug)
     {
         $pet = Pet::where('slug','=',$slug)->firstOrFail();

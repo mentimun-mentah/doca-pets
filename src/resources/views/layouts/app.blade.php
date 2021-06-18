@@ -171,12 +171,11 @@
 
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto align-items-center">
-
               <li class="nav-item {{Route::currentRouteName() == 'news' ? 'active': ''}}">
-                <a class="nav-link" href="{{url('/news')}}">Beranda</a>
+                <a class="nav-link" href="{{url('/')}}">Beranda</a>
               </li>
-              <li class="nav-item {{Request::is('/') ? 'active': ''}}">
-                <a class="nav-link" href="{{ url('/') }}">Jenis Hewan</a>
+              <li class="nav-item {{Route::currentRouteName() == 'pet' ? 'active': ''}}">
+                <a class="nav-link" href="{{ url('/kind-pet') }}">Jenis Hewan</a>
               </li>
               <li class="nav-item {{Route::currentRouteName() == 'doctor' ? 'active': ''}}">
                 <a class="nav-link" href="{{url('/doctor')}}">Dokter</a>
