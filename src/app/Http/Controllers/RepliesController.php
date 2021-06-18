@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\Comment;
 use App\Models\Replies;
 use App\Models\Like;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 
 class RepliesController extends Controller
@@ -19,9 +20,15 @@ class RepliesController extends Controller
     
         $comment = Comment::findOrFail($id);
 
-        $comment->replies()->create([
+        $reply = Replies::create([
+          'comment_id' => $comment->id,
           'balasan' => $request->balasan,
           'user_id' => Auth::user()->id
+        ]);
+
+        Notification::create([
+          'user_id' => $comment->user_id,
+          'replies_id' => $reply->id,
         ]);
 
         return ['status' => 'Success add reply'];

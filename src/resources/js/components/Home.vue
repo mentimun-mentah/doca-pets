@@ -69,45 +69,6 @@
     </div>
     <!-- /container -->
 
-    <!-- Modal -->
-
-    <div class="modal-backdrop fade show" v-if="newsData && newsData.judul && show"></div>
-    <transition
-      enter-active-class="animate__animated animate__fadeInDown animate__faster"
-      leave-active-class="animate__animated animate__fadeOut animate__faster"
-    >
-      <div v-if="newsData && newsData.judul && show" class="modal fade show d-block">
-        <div
-          class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
-        >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">
-                {{newsData.judul}}
-              </h5>
-              <button type="button" class="close" @click="show = !show">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <img
-                :src="storage + '/news/' + newsData.photo"
-                class="img-fluid w-100"
-                alt="img-animal"
-              />
-              <h6 class="h5 my-3 font-weight-bold">Deskripsi</h6>
-              <div class="deskripsi" v-html="newsData.deskripsi">
-              </div>
-
-
-              <h6 class="h5 my-3 font-weight-bold">Lokasi Terakhir</h6>
-              <div class="maps-doctor" v-html="newsData.lokasi"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-    </transition>
   </div>
 </template>
 
@@ -116,7 +77,6 @@ export default {
   props: ['home', 'storage'],
   data() {
     return {
-      show: false,
       url: '/admin/pet/all-pet',
       petsData: {},
       newsData: {},
@@ -131,11 +91,6 @@ export default {
         this.petsData = res.data
       })
     },
-    getNews(){
-      axios.get('/admin/news/all-news').then(res => {
-        this.newsData = res.data.data[0]
-      })
-    }
   },
   watch: {
     q(val){
@@ -159,10 +114,6 @@ export default {
   },
   mounted() {
     this.getResults()
-    this.getNews()
-    setTimeout(() => {
-      this.show = true;
-    }, 500);
   }
 };
 </script>

@@ -1,4 +1,5 @@
 #!/bin/bash
+chmod -R 777 src/
 mkdir src/storage/app/public/avatar
 mkdir src/storage/app/public/doctor
 mkdir src/storage/app/public/news
@@ -18,3 +19,4 @@ docker-compose stop
 docker-compose up -d
 bash cmd.sh artisan migrate:fresh
 bash cmd.sh artisan storage:link
+chmod -R 777 src/

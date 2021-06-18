@@ -94,6 +94,44 @@
     </div>
     <!-- /container -->
 
+    <!-- Modal -->
+    <div class="modal-backdrop fade show" v-if="newsDataModal && newsDataModal.judul && show"></div>
+    <transition
+      enter-active-class="animate__animated animate__fadeInDown animate__faster"
+      leave-active-class="animate__animated animate__fadeOut animate__faster"
+    >
+      <div v-if="newsDataModal && newsDataModal.judul && show" class="modal fade show d-block">
+        <div
+          class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">
+                {{newsDataModal.judul}}
+              </h5>
+              <button type="button" class="close" @click="show = !show">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img
+                :src="storage + '/' + newsDataModal.photo"
+                class="img-fluid w-100"
+                alt="img-animal"
+              />
+              <h6 class="h5 my-3 font-weight-bold">Deskripsi</h6>
+              <div class="deskripsi" v-html="newsDataModal.deskripsi">
+              </div>
+
+              <h6 class="h5 my-3 font-weight-bold">Lokasi Terakhir</h6>
+              <div class="maps-doctor" v-html="newsDataModal.lokasi"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal -->
+    </transition>
+
   </div>
 </template>
 
@@ -103,13 +141,20 @@ export default {
   data(){
     return{
       url: '/admin/news/all-news',
-      newsData: {}
+      newsDataModal: {},
+      newsData: {},
+      show: false
     }
   },
   methods:{
     getResults(page = 1){
       axios.get(`${this.url}?page=${page}`).then(res => {
         this.newsData = res.data
+      })
+    },
+    getNews(){
+      axios.get('/admin/news/all-news').then(res => {
+        this.newsDataModal = res.data.data[0]
       })
     },
   },
@@ -121,6 +166,10 @@ export default {
   },
   mounted(){ 
     this.getResults()
+    this.getNews()
+    setTimeout(() => {
+      this.show = true;
+    }, 500);
   }
 };
 </script>

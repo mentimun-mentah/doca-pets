@@ -42,6 +42,7 @@ Vue.component('change-news', require('./components/admin/news/ChangeNews.vue').d
 Vue.component('add-treat', require('./components/admin/treat/AddTreat.vue').default);
 Vue.component('all-treat', require('./components/admin/treat/AllTreat.vue').default);
 Vue.component('change-treat', require('./components/admin/treat/ChangeTreat.vue').default);
+Vue.component('navbar-notification', require('./components/Navbar-Notification.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -53,6 +54,9 @@ Vue.use(wysiwyg, {}); // config is optional. more below
 
 import VueBootstrapToasts from "vue-bootstrap-toasts";
 Vue.use(VueBootstrapToasts);
+
+import ScrollLoader from 'vue-scroll-loader';
+Vue.use(ScrollLoader)
 
 Vue.component('pagination', require('laravel-vue-pagination'));
 

@@ -28,4 +28,9 @@ class Replies extends Model
     {
         return $this->hasMany("App\Models\Like");
     }
+
+    public function notifications()
+    {
+        return $this->hasMany("App\Models\Notification");
+    }
 }

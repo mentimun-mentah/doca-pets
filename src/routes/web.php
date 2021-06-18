@@ -125,6 +125,11 @@ Route::middleware(['admin'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+  Route::get('/notification/my-notif', [App\Http\Controllers\NotificationController::class, 'fetchMyNotif']);
+  Route::put('/notification/read/{id}', [App\Http\Controllers\NotificationController::class, 'readNotif'])
+    ->where('id','[0-9]+');
+  Route::get('/notification/total-notif', [App\Http\Controllers\NotificationController::class, 'totalNotif']);
+  Route::put('/notification/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllRead']);
   Route::get('/user', function () {
       return Auth::user();
   });

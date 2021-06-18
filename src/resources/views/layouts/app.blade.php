@@ -121,6 +121,20 @@
       .va-sub {
         vertical-align: sub;
       }
+      .no-toggle.dropdown-toggle::after  {
+        display:none;
+      }
+      .dropdown-notif {
+        min-width: 250px;
+        max-height: 200px;
+        overflow-y: scroll;
+      }
+      .dropdown-notif > .dropdown-item {
+        padding: 0.25rem 0.75rem;
+      }
+      .dropdown-notif > .dropdown-item:not(:last-of-type) {
+        border-bottom: 1px solid #dee2e6 !important;
+      }
       /***** Navbar ******/
 
     </style>
@@ -158,11 +172,11 @@
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto align-items-center">
 
-              <li class="nav-item {{Request::is('/') ? 'active': ''}}">
-                <a class="nav-link" href="{{ url('/') }}">Beranda</a>
-              </li>
               <li class="nav-item {{Route::currentRouteName() == 'news' ? 'active': ''}}">
-                <a class="nav-link" href="{{url('/news')}}">Berita</a>
+                <a class="nav-link" href="{{url('/news')}}">Beranda</a>
+              </li>
+              <li class="nav-item {{Request::is('/') ? 'active': ''}}">
+                <a class="nav-link" href="{{ url('/') }}">Jenis Hewan</a>
               </li>
               <li class="nav-item {{Route::currentRouteName() == 'doctor' ? 'active': ''}}">
                 <a class="nav-link" href="{{url('/doctor')}}">Dokter</a>
@@ -194,6 +208,12 @@
                 >
               </li>
               @endif @else
+
+              @if(Auth::user()->role != 'doctor')
+              <li class="nav-item dropdown">
+                <navbar-notification :home="{{json_encode(url('/'))}}"></navbar-notification>
+              </li>
+              @endif
               <li class="nav-item dropdown">
                 <a
                   id="navbarDropdown"
