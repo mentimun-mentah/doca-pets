@@ -1,6 +1,13 @@
 <template>
   <div>
     <div class="container">
+      <div class="alert alert-secondary text-center border-0 shadow-sm alert-dismissible fade show" role="alert">
+        <strong>Doca.pets </strong> merupakan website yang memberikan informasi mengenai hewan peliharaan yang hilang.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
       <section class="mt-3">
         <h2 class="text-center h3 mb-3">Berita Kehilangan</h2>
         <div class="row" v-if="newsData.data && newsData.data.length > 0">
@@ -66,6 +73,13 @@
 
                     <h6 class="h5 my-3 font-weight-bold">Lokasi Terakhir</h6>
                     <div class="maps-doctor" v-html="news.lokasi"></div>
+
+                    <h6 class="h5 my-3 font-weight-bold text-center">Jika Menemukan Hubungi</h6>
+                    <div class="text-center">
+                      <a class="btn btn-success" href="https://wa.me/6287754178916" target="_blank" role="button">
+                        <i class="fab fa-whatsapp"></i> Whatsapp
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -125,6 +139,13 @@
 
               <h6 class="h5 my-3 font-weight-bold">Lokasi Terakhir</h6>
               <div class="maps-doctor" v-html="newsDataModal.lokasi"></div>
+
+              <h6 class="h5 my-3 font-weight-bold text-center">Jika Menemukan Hubungi</h6>
+              <div class="text-center">
+                <a class="btn btn-success" href="https://wa.me/6287754178916" target="_blank" role="button">
+                  <i class="fab fa-whatsapp"></i> Whatsapp
+                </a>
+              </div>
             </div>
           </div>
         </div>
